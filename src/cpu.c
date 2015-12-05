@@ -53,13 +53,11 @@ InstructionCode Cpu_fetch(Cpu* self) {
   return (InstructionCode)instru;
 }
 ExecContainer Cpu_decode(Cpu* self, InstructionCode instru) {
-  ExecContainer ret;
-  ret.code = instru;
-  if(instru.itype.op == 0)
-    ret.func = opcodeToFunc[instru.rtype.op];
-  else
-    ret.func = opcodeToFunc[instru.itype.op];
-  return ret;
+  ExecContainer ec = {
+    code: instru,
+    func: opcodeToFunc[instru.op]
+  };
+  return ec;
 }
 
 void Cpu_exec(Cpu* self, ExecContainer container) {

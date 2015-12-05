@@ -6,9 +6,9 @@
 MemMap MemMap_new(RAM* ram, u32 ram_begin, u32 ram_end) {
 
   MemMap memmap = {
-    ram = ram,
-    ram_begin = ram_begin,
-    ram_end = ram_end
+    ram: ram,
+    ram_begin: ram_begin,
+    ram_end: ram_end
   };
   return memmap;
 }
