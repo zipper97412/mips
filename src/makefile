@@ -1,7 +1,7 @@
 
 SRC = src
 
-test : main.o cpu.o mem.o
+test : main.o cpu.o mem.o instructions.o runners.o
 	gcc $^ -o $@.e
 
 %.o : %.c

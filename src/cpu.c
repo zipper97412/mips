@@ -1,6 +1,12 @@
 #include "cpu.h"
 #include <stdio.h>
 
+#define AT 1
+#define GP 28
+#define SP 29
+#define FP 30
+#define RA 31
+
 Regs Regs_new() {
   Regs regs;
   return regs;
@@ -27,6 +33,7 @@ void Regs_display(Regs* self) {
 
   }
   printf("$HI,$LO:\t\t%#010x %#010x\n",(unsigned int)self->hi,(unsigned int)self->lo);
+  printf("$pc:\t\t%#010x\n",(unsigned int)self->pc);
 }
 
 Cpu Cpu_new(MemMap mem) {
@@ -35,13 +42,26 @@ Cpu Cpu_new(MemMap mem) {
   cpu.regs = Regs_new();
   return cpu;
 }
-void Cpu_step(Cpu* self) {
-
-}
-void Cpu_setInstruction(Cpu* self, u32 instruction) {
-
-}
 void Cpu_display(Cpu* self) {
   Regs_display(&self->regs);
   MemMap_display(&self->mem);
+}
+
+InstructionCode Cpu_fetch(Cpu* self) {
+  u32 instru = MemMap_read_word(&self->mem, self->regs.pc);
+  self->regs.pc += 4;
+  return (InstructionCode)instru;
+}
+ExecContainer Cpu_decode(Cpu* self, InstructionCode instru) {
+  ExecContainer ret;
+  ret.code = instru;
+  if(instru.itype.op == 0)
+    ret.func = opcodeToFunc[instru.rtype.op];
+  else
+    ret.func = opcodeToFunc[instru.itype.op];
+  return ret;
+}
+
+void Cpu_exec(Cpu* self, ExecContainer container) {
+  container.func(self, container.code);
 }
