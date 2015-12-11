@@ -19,19 +19,19 @@ int main() {
   ins.raw = 0x4210841;
   int ok = 0;
   ok += (ins.raw == 0x4210841);
-  ok += (ins.fn == 1);
+  ok += (ins.special == 1);
   ok += (ins.sa == 1);
   ok += (ins.rd == 1);
   ok += (ins.rt == 1);
   ok += (ins.rs == 1);
   ok += (ins.op == 1);
-  ok += (ins.im == 0x841);
-  ok += (ins.tg == 0x210841);
+  ok += (ins.imediat == 0x841);
+  ok += (ins.target == 0x210841);
   printf("test lecture champ d'instruction:\nun 9 doit apparaitre ici:%d\n", ok);
-  ins.im = 1;
+  ins.imediat = 1;
   ok = 0;
   ok += (ins.raw == 0x4210001);
-  ins.tg = 1;
+  ins.target = 1;
   ok += (ins.raw == 0x4000001);
   printf("test ecriture champ insruction:\nun 2 doit apparaitre ici:%d\n", ok);
 

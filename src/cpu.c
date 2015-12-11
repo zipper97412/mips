@@ -55,7 +55,7 @@ InstructionCode Cpu_fetch(Cpu* self) {
 ExecContainer Cpu_decode(Cpu* self, InstructionCode instru) {
   ExecContainer ec = {
     code: instru,
-    func: opcodeToFunc[instru.op]
+    func: opcodeToFuncIJ[instru.op]
   };
   return ec;
 }
