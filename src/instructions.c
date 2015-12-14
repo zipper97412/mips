@@ -5,8 +5,14 @@ void RtypeDispatcher(Cpu* self, InstructionCode mc) {
   specialToFuncR[mc.special](self, mc);
 }
 
-void ADD(Cpu* self, InstructionCode mc) {}//32
-void ADDI(Cpu* self, InstructionCode mc) {}//8 I
+void ADD(Cpu* self, InstructionCode mc) {
+	u64 temp = (u64)(self->Regs.gpr[mc.rs]) + (u64)(self->Regs.gpr[mc.rt]);
+	if(temp.overflow
+}//32
+void ADDI(Cpu* self, InstructionCode mc) {
+	
+	
+}//8 I
 void SUB(Cpu* self, InstructionCode mc) {}//34
 void MULT(Cpu* self, InstructionCode mc) {}//24
 void DIV(Cpu* self, InstructionCode mc) {}//26
@@ -33,6 +39,7 @@ void BLEZ(Cpu* self, InstructionCode mc) {}//6 I
 void J(Cpu* self, InstructionCode mc) {}//2 J
 void JAL(Cpu* self, InstructionCode mc) {}//3 J
 void JR(Cpu* self, InstructionCode mc) {}//8
+
 
 OperationFunc opcodeToFuncIJ[64] = {
   &RtypeDispatcher,

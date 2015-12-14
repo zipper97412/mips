@@ -18,9 +18,18 @@ typedef union {
       u8 o1: 8;
   };
 }u32Bytes;
+
+typedef unsigned double u64;
+
+typedef union {
+	u64 raw;
+	struct {
+		u32 u32 : 32;
+		u32 overflow: 1;
+	};
+}u32overflow;
 //version signée de u32
 typedef signed long int i32;
-
 
 
 #endif
