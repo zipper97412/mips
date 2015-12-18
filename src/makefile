@@ -2,7 +2,7 @@ LDFLAGS= -g
 CFLAGS=-Wall -O -g
 SRC = src
 
-test : main.o cpu.o mem.o instructions.o runners.o
+test : main2.o cpu.o mem.o instructions.o runners.o
 	gcc $^ -o $@.e $(LDFLAGS)
 
 decodeur : decodeur.o main.o 
