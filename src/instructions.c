@@ -6,13 +6,13 @@ void RtypeDispatcher(Cpu* self, InstructionCode mc) {
 }
 
 void ADD(Cpu* self, InstructionCode mc) {
-	(i32)self->regs.gpr[mc.rd] = (i32)(self->regs.gpr[mc.rs]) + (i32)(self->regs.gpr[mc.rt]);
+	self->regs.gpr[mc.rd] = (i32)(self->regs.gpr[mc.rs]) + (i32)(self->regs.gpr[mc.rt]);
 }//32
 void ADDI(Cpu* self, InstructionCode mc) {
-	(i32)self->regs.gpr[mc.rt] = (i32)(self->regs.gpr[mc.rs]) + (i32)(mc.immediat);
+	self->regs.gpr[mc.rt] = (i32)(self->regs.gpr[mc.rs]) + (i32)(mc.immediat);
 }//8 I
 void SUB(Cpu* self, InstructionCode mc) {
-	(i32)self->regs.gpr[mc.rd] = (i32)(self->regs.gpr[mc.rs]) - (i32)(self->regs.gpr[mc.rt]);
+	self->regs.gpr[mc.rd] = (i32)(self->regs.gpr[mc.rs]) - (i32)(self->regs.gpr[mc.rt]);
 }//34
 void MULT(Cpu* self, InstructionCode mc) {
 	u64hilo temp = (u64hilo)( (i64)(self->regs.gpr[mc.rs]) * (i64)(self->regs.gpr[mc.rt]) );
