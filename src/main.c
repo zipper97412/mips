@@ -25,10 +25,10 @@ int main() {
   ok += (ins.rt == 1);
   ok += (ins.rs == 1);
   ok += (ins.op == 1);
-  ok += (ins.imediat == 0x841);
+  ok += (ins.immediat == 0x841);
   ok += (ins.target == 0x210841);
   printf("test lecture champ d'instruction:\nun 9 doit apparaitre ici:%d\n", ok);
-  ins.imediat = 1;
+  ins.immediat = 1;
   ok = 0;
   ok += (ins.raw == 0x4210001);
   ins.target = 1;

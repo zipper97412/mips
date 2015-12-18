@@ -10,7 +10,7 @@ void ADD(Cpu* self, InstructionCode mc) {
 	self->regs.gpr[mc.rd] = (u32)temp;
 }//32
 void ADDI(Cpu* self, InstructionCode mc) {
-	i64 temp = (i64)(self->regs.gpr[mc.rs]) + (i64)(mc.imediat);
+	i64 temp = (i64)(self->regs.gpr[mc.rs]) + (i64)(mc.immediat);
 	self->regs.gpr[mc.rt] = (u32)temp;
 }//8 I
 void SUB(Cpu* self, InstructionCode mc) {
@@ -52,24 +52,52 @@ void SLT(Cpu* self, InstructionCode mc) {
 }//42!!!
 
 void LW(Cpu* self, InstructionCode mc) {
-	self->regs.gpr[mc.rt] = MemMap_read_word(&self->mem, (i32)(self->regs.gpr[mc.rs]) + (i16)mc.imediat);
+	self->regs.gpr[mc.rt] = MemMap_read_word(&self->mem, (i32)(self->regs.gpr[mc.rs]) + (i16)(mc.immediat));
 }//35 I
 void SW(Cpu* self, InstructionCode mc) {
-	MemMap_read_word(&self->mem, (i32)(self->regs.gpr[mc.rs]) + (i16)mc.imediat, self->regs.gpr[mc.rt]);
+	MemMap_write_word(&self->mem, (i32)(self->regs.gpr[mc.rs]) + (i16)(mc.immediat), self->regs.gpr[mc.rt]);
 }//43 I
 void LUI(Cpu* self, InstructionCode mc) {
-	self->regs.gpr[mc.rt] = (u32)(mc.imediat<<16);
+	self->regs.gpr[mc.rt] = 0;
+	self->regs.gpr[mc.rt] += (u32)(mc.immediat<<16);
 }
-void MFHI(Cpu* self, InstructionCode mc) {}//16
-void MHLO(Cpu* self, InstructionCode mc) {}//18
+void MFHI(Cpu* self, InstructionCode mc) {
+	self->regs.gpr[mc.rd] = self->regs.hi;
+}//16
+void MHLO(Cpu* self, InstructionCode mc) {
+	self->regs.gpr[mc.rd] = self->regs.lo;
+}//18
 
-void BEQ(Cpu* self, InstructionCode mc) {}//4 I
-void BNE(Cpu* self, InstructionCode mc) {}//5 I
-void BGTZ(Cpu* self, InstructionCode mc) {}//7 I
-void BLEZ(Cpu* self, InstructionCode mc) {}//6 I
-void J(Cpu* self, InstructionCode mc) {}//2 J
-void JAL(Cpu* self, InstructionCode mc) {}//3 J
-void JR(Cpu* self, InstructionCode mc) {}//8
+void BEQ(Cpu* self, InstructionCode mc) {
+	if (self->regs.gpr[mc.rs] == self->regs.gpr[mc.rt]){
+		self->regs.pc += (i16)(mc.immediat<<2);
+	}
+}//4 I
+void BNE(Cpu* self, InstructionCode mc) {
+	if (self->regs.gpr[mc.rs] != self->regs.gpr[mc.rt]){
+		self->regs.pc += (i16)(mc.immediat<<2);
+	}
+}//5 I
+void BGTZ(Cpu* self, InstructionCode mc) {
+	if ((i32)self->regs.gpr[mc.rs] > 0){
+		self->regs.pc += (i16)(mc.immediat<<2);
+	}
+}//7 I
+void BLEZ(Cpu* self, InstructionCode mc) {
+	if ((i32)self->regs.gpr[mc.rs] <= 0){
+		self->regs.pc += (i16)(mc.immediat<<2);
+	}
+}//6 I
+void J(Cpu* self, InstructionCode mc) {
+	self->regs.pc += (i32)(mc.target<<2);
+}//2 J
+void JAL(Cpu* self, InstructionCode mc) {
+	self->regs.gpr[RA] = self->regs.pc;
+	self->regs.pc += (i32)(mc.target<<2);
+}//3 J
+void JR(Cpu* self, InstructionCode mc) {
+	self->regs.pc = self->regs.gpr[mc.rs];
+}//8
 
 
 OperationFunc opcodeToFuncIJ[64] = {

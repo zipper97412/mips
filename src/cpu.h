@@ -5,6 +5,12 @@
 #include "type.h"
 #include "instru_util.h"
 
+#define AT 1
+#define GP 28
+#define SP 29
+#define FP 30
+#define RA 31
+
 typedef struct Regs {
   u32 gpr[32];
   u32 hi;
