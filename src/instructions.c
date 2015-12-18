@@ -6,29 +6,60 @@ void RtypeDispatcher(Cpu* self, InstructionCode mc) {
 }
 
 void ADD(Cpu* self, InstructionCode mc) {
-	u64 temp = (u64)(self->Regs.gpr[mc.rs]) + (u64)(self->Regs.gpr[mc.rt]);
-	if(temp.overflow
+	i64 temp = (i64)(self->regs.gpr[mc.rs]) + (i64)(self->regs.gpr[mc.rt]);
+	self->regs.gpr[mc.rd] = (u32)temp;
 }//32
 void ADDI(Cpu* self, InstructionCode mc) {
-	
-	
+	i64 temp = (i64)(self->regs.gpr[mc.rs]) + (i64)(mc.imediat);
+	self->regs.gpr[mc.rt] = (u32)temp;
 }//8 I
-void SUB(Cpu* self, InstructionCode mc) {}//34
-void MULT(Cpu* self, InstructionCode mc) {}//24
-void DIV(Cpu* self, InstructionCode mc) {}//26
+void SUB(Cpu* self, InstructionCode mc) {
+	i64 temp = (i64)(self->regs.gpr[mc.rs]) - (i64)(self->regs.gpr[mc.rt]);
+	self->regs.gpr[mc.rd] = (u32)temp;
+}//34
+void MULT(Cpu* self, InstructionCode mc) {
+	u64hilo temp = (u64hilo)( (i64)(self->regs.gpr[mc.rs]) * (i64)(self->regs.gpr[mc.rt]) );
+	self->regs.hi = temp.hi;
+	self->regs.lo = temp.lo;
+}//24
+void DIV(Cpu* self, InstructionCode mc) {
+	self->regs.lo = (i32)(self->regs.gpr[mc.rs]) / (i32)(self->regs.gpr[mc.rt]);
+	self->regs.hi = (i32)(self->regs.gpr[mc.rs]) % (i32)(self->regs.gpr[mc.rt]);
+}//26
 
-void AND(Cpu* self, InstructionCode mc) {}//36
-void OR(Cpu* self, InstructionCode mc) {}//37
-void XOR(Cpu* self, InstructionCode mc) {}//38
+void AND(Cpu* self, InstructionCode mc) { 
+	self->regs.gpr[mc.rd] = self->regs.gpr[mc.rs] & self->regs.gpr[mc.rt];
+}//36
+void OR(Cpu* self, InstructionCode mc) {
+	self->regs.gpr[mc.rd] = self->regs.gpr[mc.rs] | self->regs.gpr[mc.rt];
+}//37
+void XOR(Cpu* self, InstructionCode mc) {
+	u32 a = self->regs.gpr[mc.rs];
+	u32 b = self->regs.gpr[mc.rt];
+	self->regs.gpr[mc.rd] = ((~a)&b)|(a&(~b));
+}//38
 
-void SLL(Cpu* self, InstructionCode mc) {}//0
-void SRL(Cpu* self, InstructionCode mc) {}//2
+void SLL(Cpu* self, InstructionCode mc) {
+	self->regs.gpr[mc.rd] = self->regs.gpr[mc.rt] << mc.sa;
+}//0
+void SRL(Cpu* self, InstructionCode mc) {
+	u32 value = self->regs.gpr[mc.rt];
+	self->regs.gpr[mc.rd] = ( value >> (mc.sa) ) | ( value << (32 - mc.sa) );
+}//2
 
-void SLT(Cpu* self, InstructionCode mc) {}//42!!!
+void SLT(Cpu* self, InstructionCode mc) {
+	self->regs.gpr[mc.rd] = (u32)(self->regs.gpr[mc.rs] < self->regs.gpr[mc.rt]);
+}//42!!!
 
-void LW(Cpu* self, InstructionCode mc) {}//35 I
-void SW(Cpu* self, InstructionCode mc) {}//43 I
-void LUI(Cpu* self, InstructionCode mc) {}//15 I
+void LW(Cpu* self, InstructionCode mc) {
+	self->regs.gpr[mc.rt] = MemMap_read_word(&self->mem, (i32)(self->regs.gpr[mc.rs]) + (i16)mc.imediat);
+}//35 I
+void SW(Cpu* self, InstructionCode mc) {
+	MemMap_read_word(&self->mem, (i32)(self->regs.gpr[mc.rs]) + (i16)mc.imediat, self->regs.gpr[mc.rt]);
+}//43 I
+void LUI(Cpu* self, InstructionCode mc) {
+	self->regs.gpr[mc.rt] = (u32)(mc.imediat<<16);
+}
 void MFHI(Cpu* self, InstructionCode mc) {}//16
 void MHLO(Cpu* self, InstructionCode mc) {}//18
 

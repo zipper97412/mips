@@ -1,5 +1,6 @@
 #ifndef CPU_H
 #define CPU_H
+
 #include "mem.h"
 #include "type.h"
 #include "instru_util.h"
