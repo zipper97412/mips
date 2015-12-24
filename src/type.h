@@ -19,7 +19,7 @@ typedef union {
   };
 }u32Bytes;
 
-typedef unsigned double u64;
+typedef double u64;
 
 typedef union {
 	u64 raw;
