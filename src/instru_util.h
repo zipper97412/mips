@@ -13,7 +13,7 @@ typedef union {
     u32 op: 6;
   };
   struct {
-    u32 imediat: 16;
+    u32 immediat: 16;
   };
   struct {
     u32 target: 26;

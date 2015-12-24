@@ -1,11 +1,7 @@
 #include "cpu.h"
 #include <stdio.h>
 
-#define AT 1
-#define GP 28
-#define SP 29
-#define FP 30
-#define RA 31
+
 
 Regs Regs_new() {
   Regs regs;
@@ -63,3 +59,5 @@ ExecContainer Cpu_decode(Cpu* self, InstructionCode instru) {
 void Cpu_exec(Cpu* self, ExecContainer container) {
   container.func(self, container.code);
 }
+
+
