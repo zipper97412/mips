@@ -26,29 +26,39 @@ void fermerFichier(FILE* fichier)
 void decoupe(FILE* fichier)
 {
 	InstructionCode code;
-	int i=0;
+	int i,e=0;
 	//InstructionType type;
 	char tableau[28];
 	do
 	{
-		tableau[i]=fgetc(fichier);
-		i++;
-	} while(tableau[i-1] != '#' || tableau[i-1] != EOF || tableau[i-1] != '\n');
-
-	tableau[i-1]='\0';
-
-	if(tableau[0] != '#') //Si la ligne n'est pas un commentaire
-	{
-		deterOp(tableau, &code, fichier);
-	}
-	else 
-	{
-		//On s'en fiche ! La ligne entière est un commentaire.
-	}
-
+		i=0;
+		do
+		{
+			tableau[i]=fgetc(fichier);
+			i++;
+		} while(tableau[i-1] != '#' || tableau[i-1] != EOF || tableau[i-1] != '\n');
+		if(tableau[i-1]==EOF)
+		{
+			e=1;
+		}
+		if(tableau[i-1]=='#')
+		{
+			while(fgetc(fichier)!='\n');
+		}
+		tableau[i-1]='\0';
+	
+		if(tableau[0] != '#') //Si la ligne n'est pas un commentaire
+		{
+			deterOp(tableau, &code, fichier);
+		}
+		else 
+		{
+			//On s'en fiche ! La ligne entière est un commentaire.
+		}
+	}while(e==0);
 }
 
-InstructionType deterOp(char* tableau, InstructionCode* temp, FILE* fichier)
+InstructionType deterOp(char* tableau, InstructionCode* temp)
 {
 	int i=0,j=0,k=0;
 	char tab[10];
