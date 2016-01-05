@@ -908,5 +908,10 @@ int convertirRegistre(char* tab)
 	{
 		return 31;
 	}
-
+	
+	else
+	{
+		printf("Erreur registre ! \n");
+		exit(1);
+	}
 }
