@@ -12,7 +12,6 @@ typedef short int i16;
 typedef unsigned long int u32;
 typedef signed long int i32;
 
-typedef unsigned long long u64;
 typedef unsigned long long i64;
 //type utilitaire pour extraire les octets de u32 (passer par un cast)
 typedef union {
