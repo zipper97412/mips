@@ -4,8 +4,6 @@
 #include "decodeur.h"
 
 char tab[][]= {
-	"ADDI $t0, $zero, 5",
-	"ADD $t2, $t0, $t1",
 	"SUB $t3, $t0, $t2",
 	"MULT $t3,$t0",
 	"MULT $t3,$t0",
@@ -17,12 +15,17 @@ char tab[][]= {
 	"AND $t8, $t0, $t3",
 	"OR $t9, $t0, $t1",
 	"XOR $s0, $t0, $t1"
-	}
-
+	};
+void remplir(op,rs,rt,rd,sa,special)
 int main()
 {
 	InstructionCode code;
 	code.op=0;
-	printf("%#010x\n", (unsigned int)deterOp(tab, &code).raw);
+	code.rs=8;
+	code.rd=11;
+	code.rt=10;
+	code.special=34;
+	code.sa=0;
+	//printf("%#010x\n", (unsigned int)deterOp(tab, &code).raw);
 	return 0;
 }
