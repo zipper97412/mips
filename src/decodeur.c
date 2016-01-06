@@ -62,7 +62,7 @@ InstructionCode* decoupe(FILE* fichier)
 	return prgm;
 }
 
-InstructionType deterOp(char* tableau, InstructionCode* temp)
+InstructionCode deterOp(char* tableau, InstructionCode* temp)
 {
 	int i=0,j=0,k=0;
 	char tab[10];
@@ -107,11 +107,11 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 			}
 			k++;
 		}
-		return(Rtype);
 	}
 
 	else if(strcmp(tab,"ADDI") == 0)
 	{
+		printf("hdg\n");
 		temp->op = 8;
 		while(k<3)
 		{
@@ -142,7 +142,6 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 			}
 			k++;
 		}
-		return(Itype);
 	}
 
 	else if(strcmp(tab,"AND") == 0)
@@ -178,7 +177,6 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 			}
 			k++;
 		}
-		return(Rtype);
 	}
 
 	else if(strcmp(tab,"BEQ") == 0)
@@ -213,7 +211,6 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 			}
 			k++;
 		}
-		return(Itype);
 	}
 
 	else if(strcmp(tab,"BGTZ") == 0)
@@ -244,8 +241,6 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 			}
 			k++;
 		}
-		
-		return(Itype);
 	}
 
 	else if(strcmp(tab,"BLEZ") == 0)
@@ -277,7 +272,6 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 			}
 			k++;
 		}
-		return(Itype);
 	}
 
 	else if(strcmp(tab,"BNE") == 0)
@@ -311,8 +305,7 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 				temp->immediat=atoi(tab);
 			}
 			k++;
-		}
-		return(Itype);	
+		}	
 	}
 
 	else if(strcmp(tab,"DIV") == 0)
@@ -346,19 +339,16 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 			}
 			k++;
 		}
-		return(Rtype);
 	}
 
 	else if(strcmp(tab,"J") == 0)
 	{
 		temp->op = 2;
-		return(Jtype);
 	}
 
 	else if(strcmp(tab,"JAL") == 0)
 	{
 		temp->op = 3;
-		return(Jtype);
 	}
 
 	else if(strcmp(tab,"JR") == 0)
@@ -368,7 +358,6 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 		temp->sa=0;
 		temp->rd=0;
 		temp->rt=0;
-		return(Rtype);
 	}
 
 	else if(strcmp(tab,"LUI") == 0)
@@ -400,13 +389,11 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 			}
 			k++;
 		}
-		return(Itype);
 	}
 
 	else if(strcmp(tab,"LW") == 0)
 	{
 		temp->op = 35;
-		return(Itype);
 	}
 
 	else if(strcmp(tab,"MFHI") == 0)
@@ -429,7 +416,6 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 		} while(tableau[i] != ' ' || tableau[i] != ',' || tableau[i] != '#' || tableau[i] != EOF || tableau[i] != '\n');
 		tab[j]='\0';
 		temp->rd=convertirRegistre(tab);
-		return(Rtype);
 	}
 
 	else if(strcmp(tab,"MFLO") == 0)
@@ -451,7 +437,6 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 		} while(tableau[i] != ' ' || tableau[i] != ',' || tableau[i] != '#' || tableau[i] != EOF || tableau[i] != '\n');
 		tab[j]='\0';
 		temp->rd=convertirRegistre(tab);
-		return(Rtype);
 	}
 
 	else if(strcmp(tab,"MULT") == 0)
@@ -485,7 +470,6 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 			}
 			k++;
 		}
-		return(Rtype);
 	}
 
 	else if(strcmp(tab,"OR") == 0)
@@ -522,7 +506,6 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 			}
 			k++;
 		}
-		return(Rtype);
 	}
 
 	else if(strcmp(tab,"ROTR") == 0)
@@ -559,7 +542,6 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 			}
 			k++;
 		}
-		return(Rtype);
 	}
 
 	else if(strcmp(tab,"SLL") == 0)
@@ -596,7 +578,6 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 			}
 			k++;
 		}
-		return(Rtype);
 	}
 
 	else if(strcmp(tab,"SLT") == 0)
@@ -633,7 +614,6 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 			}
 			k++;
 		}
-		return(Rtype);
 	}
 
 	else if(strcmp(tab,"SRL") == 0)
@@ -670,7 +650,6 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 			}
 			k++;
 		}
-		return(Rtype);
 	}
 
 	else if(strcmp(tab,"SUB") == 0)
@@ -707,13 +686,11 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 			}
 			k++;
 		}
-		return(Rtype);
 	}
 
 	else if(strcmp(tab,"SW") == 0)
 	{
 		temp->op = 43;
-		return(Itype);
 	}
 
 
@@ -751,7 +728,6 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 			}
 			k++;
 		}
-		return(Rtype);
 	}
 
 	else
@@ -759,6 +735,7 @@ InstructionType deterOp(char* tableau, InstructionCode* temp)
 		printf("Mauvaise instruction ! \n");
 		exit(1);
 	}
+	return *temp;
 }
 
 int convertirRegistre(char* tab)
