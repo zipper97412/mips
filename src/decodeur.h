@@ -17,7 +17,7 @@ typedef enum
 FILE* ouvrirFichier(char* nom);
 void fermerFichier(FILE* fichier);
 void decoupe(FILE* fichier);
-InstructionType deterOp(char* tab, InstructionCode* temp, FILE* fichier);
-//int convertirRegistre(char* tab);
+InstructionType deterOp(char* tab, InstructionCode* temp);
+int convertirRegistre(char* tab);
 
 #endif
