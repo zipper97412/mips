@@ -8,7 +8,7 @@
 #include "instru_util.h"
 
 
-FILE* ouvrirFichier(char* nom);
+FILE* ouvrirFichier(const char* nom);
 void fermerFichier(FILE* fichier);
 InstructionCode* decoupe(FILE* fichier);
 InstructionCode deterOp(char* tab);

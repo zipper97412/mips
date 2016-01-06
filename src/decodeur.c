@@ -7,7 +7,7 @@
 
 //MANQUE : J JAL JR LW SW
 
-FILE* ouvrirFichier(char* nom)
+FILE* ouvrirFichier(const char* nom)
 {
 	FILE* fichierTest = fopen(nom, "r+");
 	if (fichierTest == NULL)

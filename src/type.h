@@ -27,7 +27,7 @@ typedef union {
 typedef double u64;
 
 typedef union {
-	u64 raw;
+	i64 raw;
 	struct {
 		u32 lo: 32;
 		u32 hi: 32;
