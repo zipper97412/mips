@@ -25,9 +25,8 @@ void fermerFichier(FILE* fichier)
 
 InstructionCode* decoupe(FILE* fichier)
 {
-	InstructionCode pgrm = NULL;
+	InstructionCode* pgrm = NULL;
 	int pgrmLen = 0;
-	InstructionCode code;
 	int i,e=0;
 	//InstructionType type;
 	char tableau[28];
@@ -51,21 +50,22 @@ InstructionCode* decoupe(FILE* fichier)
 	
 		if(tableau[0] != '#') //Si la ligne n'est pas un commentaire
 		{
-			pgrm = realloc(pgrm,sizeof(InstructionCode)*++pgrmLen)
-			pgrm[pgrmLen] = deterOp(tableau, &code, fichier);
+			pgrm = realloc(pgrm,sizeof(InstructionCode)*++pgrmLen);
+			pgrm[pgrmLen] = deterOp(tableau);
 		}
 		else 
 		{
 			//On s'en fiche ! La ligne entière est un commentaire.
 		}
 	}while(e==0);
-	return prgm;
+	return pgrm;
 }
 
-InstructionCode deterOp(char* tableau, InstructionCode* temp)
+InstructionCode deterOp(char* tableau)
 {
 	int i=0,j=0,k=0;
 	char tab[10];
+	InstructionCode temp;
 	do
 	{
 		tab[i]=tableau[i];
@@ -75,9 +75,9 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 	
 	if(strcmp(tab,"ADD") == 0)
 	{
-		temp->op = 0;
-		temp->special = 32;
-		temp->sa = 0;
+		temp.op = 0;
+		temp.special = 32;
+		temp.sa = 0;
 		while(k<3)
 		{
 			j=0;
@@ -95,15 +95,15 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 			
 			if(k==0)
 			{
-				temp->rd=convertirRegistre(tab);
+				temp.rd=convertirRegistre(tab);
 			}
 			else if (k==1)
 			{
-				temp->rs=convertirRegistre(tab);
+				temp.rs=convertirRegistre(tab);
 			}
 			else if (k==2)
 			{
-				temp->rt=convertirRegistre(tab);
+				temp.rt=convertirRegistre(tab);
 			}
 			k++;
 		}
@@ -111,7 +111,7 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 
 	else if(strcmp(tab,"ADDI") == 0)
 	{
-		temp->op = 8;
+		temp.op = 8;
 		while(k<3)
 		{
 			j=0;
@@ -130,15 +130,15 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 			
 			if(k==0)
 			{
-				temp->rt=convertirRegistre(tab);
+				temp.rt=convertirRegistre(tab);
 			}
 			else if (k==1)
 			{
-				temp->rs=convertirRegistre(tab);
+				temp.rs=convertirRegistre(tab);
 			}
 			else if (k==2)
 			{
-				temp->immediat=atoi(tab);
+				temp.immediat=atoi(tab);
 			}
 			k++;
 		}
@@ -146,9 +146,9 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 
 	else if(strcmp(tab,"AND") == 0)
 	{
-		temp->op = 0;
-		temp->special = 36;
-		temp->sa = 0;
+		temp.op = 0;
+		temp.special = 36;
+		temp.sa = 0;
 		while(k<3)
 		{
 			j=0;
@@ -165,15 +165,15 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 			tab[j]='\0';
 			if(k==0)
 			{
-				temp->rd=convertirRegistre(tab);
+				temp.rd=convertirRegistre(tab);
 			}
 			else if (k==1)
 			{
-				temp->rs=convertirRegistre(tab);
+				temp.rs=convertirRegistre(tab);
 			}
 			else if (k==2)
 			{
-				temp->rt=convertirRegistre(tab);
+				temp.rt=convertirRegistre(tab);
 			}
 			k++;
 		}
@@ -181,7 +181,7 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 
 	else if(strcmp(tab,"BEQ") == 0)
 	{
-		temp->op = 4;
+		temp.op = 4;
 		while(k<3)
 		{
 			j=0;
@@ -199,15 +199,15 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 			
 			if(k==0)
 			{
-				temp->rs=convertirRegistre(tab);
+				temp.rs=convertirRegistre(tab);
 			}
 			else if (k==1)
 			{
-				temp->rt=convertirRegistre(tab);
+				temp.rt=convertirRegistre(tab);
 			}
 			else if (k==2)
 			{
-				temp->immediat=atoi(tab);
+				temp.immediat=atoi(tab);
 			}
 			k++;
 		}
@@ -215,8 +215,8 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 
 	else if(strcmp(tab,"BGTZ") == 0)
 	{
-		temp->op = 7;
-		temp->rt = 0;
+		temp.op = 7;
+		temp.rt = 0;
 		while(k<2)
 		{
 			j=0;
@@ -233,11 +233,11 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 			tab[j]='\0';
 			if(k==0)
 			{
-				temp->rs=convertirRegistre(tab);
+				temp.rs=convertirRegistre(tab);
 			}
 			else if (k==1)
 			{
-				temp->immediat=atoi(tab);
+				temp.immediat=atoi(tab);
 			}
 			k++;
 		}
@@ -245,8 +245,8 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 
 	else if(strcmp(tab,"BLEZ") == 0)
 	{
-		temp->op = 6;
-		temp->rt = 0;
+		temp.op = 6;
+		temp.rt = 0;
 		while(k<2)
 		{
 			j=0;
@@ -264,11 +264,11 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 			
 			if(k==0)
 			{
-				temp->rs=convertirRegistre(tab);
+				temp.rs=convertirRegistre(tab);
 			}
 			else if (k==1)
 			{
-				temp->immediat=atoi(tab);
+				temp.immediat=atoi(tab);
 			}
 			k++;
 		}
@@ -276,7 +276,7 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 
 	else if(strcmp(tab,"BNE") == 0)
 	{
-		temp->op = 5;
+		temp.op = 5;
 		while(k<3)
 		{
 			j=0;
@@ -294,15 +294,15 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 			
 			if(k==0)
 			{
-				temp->rs=convertirRegistre(tab);
+				temp.rs=convertirRegistre(tab);
 			}
 			else if (k==1)
 			{
-				temp->rt=convertirRegistre(tab);
+				temp.rt=convertirRegistre(tab);
 			}
 			else if (k==2)
 			{
-				temp->immediat=atoi(tab);
+				temp.immediat=atoi(tab);
 			}
 			k++;
 		}	
@@ -310,10 +310,10 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 
 	else if(strcmp(tab,"DIV") == 0)
 	{
-		temp->op = 0;
-		temp->special = 26;
-		temp->sa = 0;
-		temp->rd = 0;
+		temp.op = 0;
+		temp.special = 26;
+		temp.sa = 0;
+		temp.rd = 0;
 		while(k<2)
 		{
 			j=0;
@@ -331,11 +331,11 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 			
 			if(k==0)
 			{
-				temp->rs=convertirRegistre(tab);
+				temp.rs=convertirRegistre(tab);
 			}
 			else if (k==1)
 			{
-				temp->rt=convertirRegistre(tab);
+				temp.rt=convertirRegistre(tab);
 			}
 			k++;
 		}
@@ -343,27 +343,27 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 
 	else if(strcmp(tab,"J") == 0)
 	{
-		temp->op = 2;
+		temp.op = 2;
 	}
 
 	else if(strcmp(tab,"JAL") == 0)
 	{
-		temp->op = 3;
+		temp.op = 3;
 	}
 
 	else if(strcmp(tab,"JR") == 0)
 	{
-		temp->op = 0;
-		temp->special = 8;
-		temp->sa=0;
-		temp->rd=0;
-		temp->rt=0;
+		temp.op = 0;
+		temp.special = 8;
+		temp.sa=0;
+		temp.rd=0;
+		temp.rt=0;
 	}
 
 	else if(strcmp(tab,"LUI") == 0)
 	{
-		temp->op = 15;
-		temp->rs = 0;
+		temp.op = 15;
+		temp.rs = 0;
 		while(k<2)
 		{
 			j=0;
@@ -381,11 +381,11 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 			
 			if(k==0)
 			{
-				temp->rt=convertirRegistre(tab);
+				temp.rt=convertirRegistre(tab);
 			}
 			else if (k==1)
 			{
-				temp->immediat=atoi(tab);
+				temp.immediat=atoi(tab);
 			}
 			k++;
 		}
@@ -393,16 +393,16 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 
 	else if(strcmp(tab,"LW") == 0)
 	{
-		temp->op = 35;
+		temp.op = 35;
 	}
 
 	else if(strcmp(tab,"MFHI") == 0)
 	{
-		temp->op = 0;
-		temp->special = 16;
-		temp->sa = 0;
-		temp->rs = 0;
-		temp->rt = 0;
+		temp.op = 0;
+		temp.special = 16;
+		temp.sa = 0;
+		temp.rs = 0;
+		temp.rt = 0;
 		
 		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
 		{
@@ -415,16 +415,16 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 			j++;
 		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
 		tab[j]='\0';
-		temp->rd=convertirRegistre(tab);
+		temp.rd=convertirRegistre(tab);
 	}
 
 	else if(strcmp(tab,"MFLO") == 0)
 	{
-		temp->op = 0;
-		temp->special = 18;
-		temp->sa = 0;
-		temp->rs = 0;
-		temp->rt = 0;
+		temp.op = 0;
+		temp.special = 18;
+		temp.sa = 0;
+		temp.rs = 0;
+		temp.rt = 0;
 		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
 		{
 			i++;
@@ -436,15 +436,15 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 			j++;
 		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
 		tab[j]='\0';
-		temp->rd=convertirRegistre(tab);
+		temp.rd=convertirRegistre(tab);
 	}
 
 	else if(strcmp(tab,"MULT") == 0)
 	{
-		temp->op = 0;
-		temp->special = 24;
-		temp->sa = 0;
-		temp->rd = 0;
+		temp.op = 0;
+		temp.special = 24;
+		temp.sa = 0;
+		temp.rd = 0;
 		while(k<2)
 		{
 			j=0;
@@ -462,11 +462,11 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 			
 			if(k==0)
 			{
-				temp->rs=convertirRegistre(tab);
+				temp.rs=convertirRegistre(tab);
 			}
 			else if (k==1)
 			{
-				temp->rt=convertirRegistre(tab);
+				temp.rt=convertirRegistre(tab);
 			}
 			k++;
 		}
@@ -474,9 +474,9 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 
 	else if(strcmp(tab,"OR") == 0)
 	{
-		temp->op = 0;
-		temp->special = 37;
-		temp->sa = 0;
+		temp.op = 0;
+		temp.special = 37;
+		temp.sa = 0;
 		while(k<3)
 		{
 			j=0;
@@ -494,15 +494,15 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 			
 			if(k==0)
 			{
-				temp->rd=convertirRegistre(tab);
+				temp.rd=convertirRegistre(tab);
 			}
 			else if (k==1)
 			{
-				temp->rs=convertirRegistre(tab);
+				temp.rs=convertirRegistre(tab);
 			}
 			else if (k==2)
 			{
-				temp->rt=convertirRegistre(tab);
+				temp.rt=convertirRegistre(tab);
 			}
 			k++;
 		}
@@ -510,9 +510,9 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 
 	else if(strcmp(tab,"ROTR") == 0)
 	{
-		temp->op = 0;
-		temp->special = 2;
-		temp->rs = 1;
+		temp.op = 0;
+		temp.special = 2;
+		temp.rs = 1;
 		while(k<3)
 		{
 			j=0;
@@ -530,15 +530,15 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 			
 			if(k==0)
 			{
-				temp->rd=convertirRegistre(tab);
+				temp.rd=convertirRegistre(tab);
 			}
 			else if (k==1)
 			{
-				temp->rt=convertirRegistre(tab);
+				temp.rt=convertirRegistre(tab);
 			}
 			else if (k==2)
 			{
-				temp->sa=atoi(tab);
+				temp.sa=atoi(tab);
 			}
 			k++;
 		}
@@ -546,9 +546,9 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 
 	else if(strcmp(tab,"SLL") == 0)
 	{
-		temp->op = 0;
-		temp->special = 0;
-		temp->rs = 0;
+		temp.op = 0;
+		temp.special = 0;
+		temp.rs = 0;
 		while(k<3)
 		{
 			j=0;
@@ -566,15 +566,15 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 			
 			if(k==0)
 			{
-				temp->rd=convertirRegistre(tab);
+				temp.rd=convertirRegistre(tab);
 			}
 			else if (k==1)
 			{
-				temp->rt=convertirRegistre(tab);
+				temp.rt=convertirRegistre(tab);
 			}
 			else if (k==2)
 			{
-				temp->sa=atoi(tab);
+				temp.sa=atoi(tab);
 			}
 			k++;
 		}
@@ -582,9 +582,9 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 
 	else if(strcmp(tab,"SLT") == 0)
 	{
-		temp->op = 0;
-		temp->special = 42;
-		temp->sa = 0;
+		temp.op = 0;
+		temp.special = 42;
+		temp.sa = 0;
 		while(k<3)
 		{
 			j=0;
@@ -602,15 +602,15 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 			
 			if(k==0)
 			{
-				temp->rd=convertirRegistre(tab);
+				temp.rd=convertirRegistre(tab);
 			}
 			else if (k==1)
 			{
-				temp->rs=convertirRegistre(tab);
+				temp.rs=convertirRegistre(tab);
 			}
 			else if (k==2)
 			{
-				temp->rt=convertirRegistre(tab);
+				temp.rt=convertirRegistre(tab);
 			}
 			k++;
 		}
@@ -618,9 +618,9 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 
 	else if(strcmp(tab,"SRL") == 0)
 	{
-		temp->op = 0;
-		temp->special = 2;
-		temp->rs = 0;
+		temp.op = 0;
+		temp.special = 2;
+		temp.rs = 0;
 		while(k<3)
 		{
 			j=0;
@@ -638,15 +638,15 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 			
 			if(k==0)
 			{
-				temp->rd=convertirRegistre(tab);
+				temp.rd=convertirRegistre(tab);
 			}
 			else if (k==1)
 			{
-				temp->rt=convertirRegistre(tab);
+				temp.rt=convertirRegistre(tab);
 			}
 			else if (k==2)
 			{
-				temp->sa=atoi(tab);
+				temp.sa=atoi(tab);
 			}
 			k++;
 		}
@@ -654,9 +654,9 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 
 	else if(strcmp(tab,"SUB") == 0)
 	{
-		temp->op = 0;
-		temp->special = 34;
-		temp->sa = 0;
+		temp.op = 0;
+		temp.special = 34;
+		temp.sa = 0;
 		while(k<3)
 		{
 			j=0;
@@ -674,15 +674,15 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 			
 			if(k==0)
 			{
-				temp->rd=convertirRegistre(tab);
+				temp.rd=convertirRegistre(tab);
 			}
 			else if (k==1)
 			{
-				temp->rs=convertirRegistre(tab);
+				temp.rs=convertirRegistre(tab);
 			}
 			else if (k==2)
 			{
-				temp->rt=convertirRegistre(tab);
+				temp.rt=convertirRegistre(tab);
 			}
 			k++;
 		}
@@ -690,15 +690,15 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 
 	else if(strcmp(tab,"SW") == 0)
 	{
-		temp->op = 43;
+		temp.op = 43;
 	}
 
 
 	else if(strcmp(tab,"XOR") == 0)
 	{
-		temp->op = 0;
-		temp->special = 38;
-		temp->sa = 0;
+		temp.op = 0;
+		temp.special = 38;
+		temp.sa = 0;
 		while(k<3)
 		{
 			j=0;
@@ -716,15 +716,15 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 			
 			if(k==0)
 			{
-				temp->rd=convertirRegistre(tab);
+				temp.rd=convertirRegistre(tab);
 			}
 			else if (k==1)
 			{
-				temp->rs=convertirRegistre(tab);
+				temp.rs=convertirRegistre(tab);
 			}
 			else if (k==2)
 			{
-				temp->rt=convertirRegistre(tab);
+				temp.rt=convertirRegistre(tab);
 			}
 			k++;
 		}
@@ -735,7 +735,7 @@ InstructionCode deterOp(char* tableau, InstructionCode* temp)
 		printf("Mauvaise instruction ! \n");
 		exit(1);
 	}
-	return *temp;
+	return temp;
 }
 
 int convertirRegistre(char* tab)

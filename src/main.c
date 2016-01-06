@@ -3,7 +3,7 @@
 #include <string.h>
 #include "decodeur.h"
 
-char tab[][]= {
+const char *tab[]= {
 	"ADDI $t0, $zero, 5",
 	"ADD $t2, $t0, $t1",
 	"SUB $t3, $t0, $t2",
@@ -17,12 +17,10 @@ char tab[][]= {
 	"AND $t8, $t0, $t3",
 	"OR $t9, $t0, $t1",
 	"XOR $s0, $t0, $t1"
-	}
+	};
 
 int main()
 {
-	InstructionCode code;
-	code.op=0;
-	printf("%#010x\n", (unsigned int)deterOp(tab, &code).raw);
+	//printf("%#010x\n", (unsigned int)deterOp(tab).raw);
 	return 0;
 }
