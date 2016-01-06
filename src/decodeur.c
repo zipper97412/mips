@@ -23,8 +23,10 @@ void fermerFichier(FILE* fichier)
 	fclose(fichier);
 }
 
-void decoupe(FILE* fichier)
+InstructionCode* decoupe(FILE* fichier)
 {
+	InstructionCode pgrm = NULL;
+	int pgrmLen = 0;
 	InstructionCode code;
 	int i,e=0;
 	//InstructionType type;
@@ -49,13 +51,15 @@ void decoupe(FILE* fichier)
 	
 		if(tableau[0] != '#') //Si la ligne n'est pas un commentaire
 		{
-			deterOp(tableau, &code, fichier);
+			pgrm = realloc(pgrm,sizeof(InstructionCode)*++pgrmLen)
+			pgrm[pgrmLen] = deterOp(tableau, &code, fichier);
 		}
 		else 
 		{
 			//On s'en fiche ! La ligne entière est un commentaire.
 		}
 	}while(e==0);
+	return prgm;
 }
 
 InstructionType deterOp(char* tableau, InstructionCode* temp)
