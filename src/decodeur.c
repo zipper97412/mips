@@ -27,9 +27,8 @@ int decoupe(FILE* fichier, InstructionCode** pgrm)
 {
 	*pgrm = NULL;
 	int pgrmLen = 0;
-	int i,e=0;
-	//InstructionType type;
-	char tableau[28];
+	int i;
+	char tableau[40];
 	do
 	{
 		i=0;
@@ -40,24 +39,27 @@ int decoupe(FILE* fichier, InstructionCode** pgrm)
 		} while(tableau[i-1] != '#' && tableau[i-1] != EOF && tableau[i-1] != '\n');
 		if(tableau[i-1]==EOF)
 		{
-			e=1;
+			break;
 		}
 		if(tableau[i-1]=='#')
 		{
 			while(fgetc(fichier)!='\n');
 		}
-		tableau[i-1]='\0';
-
+		
+		
 		if(tableau[0] != '#') //Si la ligne n'est pas un commentaire
 		{
-			*pgrm = realloc(*pgrm,sizeof(InstructionCode)*++pgrmLen);
-			*pgrm[pgrmLen] = deterOp(tableau);
+			tableau[i-1]='\0';
+			printf("\"%s\"\n", tableau);
+			pgrmLen++;
+			*pgrm = realloc(*pgrm, sizeof(InstructionCode) * pgrmLen);
+			(*pgrm)[pgrmLen-1] = deterOp(tableau);
 		}
 		else
 		{
 			//On s'en fiche ! La ligne entière est un commentaire.
 		}
-	}while(e==0);
+	}while(1);
 	return pgrmLen;
 }
 
@@ -90,7 +92,7 @@ InstructionCode deterOp(char* tableau)
 				tab[j]=tableau[i];
 				i++;
 				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
 			tab[j]='\0';
 
 			if(k==0)
@@ -125,7 +127,7 @@ InstructionCode deterOp(char* tableau)
 				i++;
 				j++;
 
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
 			tab[j]='\0';
 
 			if(k==0)
@@ -161,7 +163,7 @@ InstructionCode deterOp(char* tableau)
 				tab[j]=tableau[i];
 				i++;
 				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
 			tab[j]='\0';
 			if(k==0)
 			{
@@ -194,7 +196,7 @@ InstructionCode deterOp(char* tableau)
 				tab[j]=tableau[i];
 				i++;
 				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
 			tab[j]='\0';
 
 			if(k==0)
@@ -229,7 +231,7 @@ InstructionCode deterOp(char* tableau)
 				tab[j]=tableau[i];
 				i++;
 				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) &&(tableau[i] != '\n'));
 			tab[j]='\0';
 			if(k==0)
 			{
@@ -259,7 +261,7 @@ InstructionCode deterOp(char* tableau)
 				tab[j]=tableau[i];
 				i++;
 				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
 			tab[j]='\0';
 
 			if(k==0)
@@ -289,7 +291,7 @@ InstructionCode deterOp(char* tableau)
 				tab[j]=tableau[i];
 				i++;
 				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
 			tab[j]='\0';
 
 			if(k==0)
@@ -326,7 +328,7 @@ InstructionCode deterOp(char* tableau)
 				tab[j]=tableau[i];
 				i++;
 				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
 			tab[j]='\0';
 
 			if(k==0)
@@ -376,7 +378,7 @@ InstructionCode deterOp(char* tableau)
 				tab[j]=tableau[i];
 				i++;
 				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
 			tab[j]='\0';
 
 			if(k==0)
@@ -413,7 +415,7 @@ InstructionCode deterOp(char* tableau)
 			tab[j]=tableau[i];
 			i++;
 			j++;
-		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
+		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
 		tab[j]='\0';
 		temp.rd=convertirRegistre(tab);
 	}
@@ -434,7 +436,7 @@ InstructionCode deterOp(char* tableau)
 			tab[j]=tableau[i];
 			i++;
 			j++;
-		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
+		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
 		tab[j]='\0';
 		temp.rd=convertirRegistre(tab);
 	}
@@ -457,7 +459,7 @@ InstructionCode deterOp(char* tableau)
 				tab[j]=tableau[i];
 				i++;
 				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
 			tab[j]='\0';
 
 			if(k==0)
@@ -489,7 +491,7 @@ InstructionCode deterOp(char* tableau)
 				tab[j]=tableau[i];
 				i++;
 				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
 			tab[j]='\0';
 
 			if(k==0)
@@ -525,7 +527,7 @@ InstructionCode deterOp(char* tableau)
 				tab[j]=tableau[i];
 				i++;
 				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
 			tab[j]='\0';
 
 			if(k==0)
@@ -561,7 +563,7 @@ InstructionCode deterOp(char* tableau)
 				tab[j]=tableau[i];
 				i++;
 				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
 			tab[j]='\0';
 
 			if(k==0)
@@ -597,7 +599,7 @@ InstructionCode deterOp(char* tableau)
 				tab[j]=tableau[i];
 				i++;
 				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
 			tab[j]='\0';
 
 			if(k==0)
@@ -633,7 +635,7 @@ InstructionCode deterOp(char* tableau)
 				tab[j]=tableau[i];
 				i++;
 				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
 			tab[j]='\0';
 
 			if(k==0)
@@ -669,7 +671,7 @@ InstructionCode deterOp(char* tableau)
 				tab[j]=tableau[i];
 				i++;
 				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
 			tab[j]='\0';
 
 			if(k==0)
@@ -711,7 +713,7 @@ InstructionCode deterOp(char* tableau)
 				tab[j]=tableau[i];
 				i++;
 				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
 			tab[j]='\0';
 
 			if(k==0)
@@ -732,7 +734,7 @@ InstructionCode deterOp(char* tableau)
 
 	else
 	{
-		printf("Mauvaise instruction ! \n");
+		printf("Mauvaise instruction ! %s\n", tab);
 		exit(1);
 	}
 	return temp;
