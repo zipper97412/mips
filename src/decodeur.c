@@ -36,7 +36,7 @@ void decoupe(FILE* fichier)
 		{
 			tableau[i]=fgetc(fichier);
 			i++;
-		} while(tableau[i-1] != '#' || tableau[i-1] != EOF || tableau[i-1] != '\n');
+		} while(tableau[i-1] != '#' && tableau[i-1] != EOF && tableau[i-1] != '\n');
 		if(tableau[i-1]==EOF)
 		{
 			e=1;
@@ -49,7 +49,7 @@ void decoupe(FILE* fichier)
 	
 		if(tableau[0] != '#') //Si la ligne n'est pas un commentaire
 		{
-			deterOp(tableau, &code);
+			printf("%#010x\n", (unsigned int)deterOp(tableau, &code).raw);
 		}
 		else 
 		{
