@@ -37,7 +37,7 @@ int decoupe(FILE* fichier, InstructionCode** pgrm)
 		{
 			tableau[i]=fgetc(fichier);
 			i++;
-		} while(tableau[i-1] != '#' || tableau[i-1] != EOF || tableau[i-1] != '\n');
+		} while(tableau[i-1] != '#' && tableau[i-1] != EOF && tableau[i-1] != '\n');
 		if(tableau[i-1]==EOF)
 		{
 			e=1;

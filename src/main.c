@@ -3,7 +3,6 @@
 #include <string.h>
 #include "decodeur.h"
 
-
 const char *tab[]= {
 	"ADDI $t0, $zero, 5",
 	"ADD $t2, $t0, $t1",
@@ -22,13 +21,11 @@ const char *tab[]= {
 
 int main()
 {
-	InstructionCode code;
-	code.op=0;
-	code.rs=8;
-	code.rd=11;
-	code.rt=10;
-	code.special=34;
-	code.sa=0;
-	//printf("%#010x\n", (unsigned int)deterOp(tab, &code).raw);
+	InstructionCode* code;
+	FILE* fic=ouvrirFichier("test.as");
+	for(i=0;i<decoupe(fic, &code);i++)
+	{
+		printf("%#010x\n", code[i]);
+	}
 	return 0;
 }
