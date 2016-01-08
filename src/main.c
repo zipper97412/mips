@@ -21,11 +21,12 @@ const char *tab[]= {
 
 int main()
 {
+	int i;
 	InstructionCode* code;
 	FILE* fic=ouvrirFichier("test.as");
 	for(i=0;i<decoupe(fic, &code);i++)
 	{
-		printf("%#010x\n", code[i]);
+		printf("%#010x\n",(unsigned int)code[i]);
 	}
 	return 0;
 }
