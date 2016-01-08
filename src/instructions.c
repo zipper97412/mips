@@ -1,4 +1,5 @@
 #include "cpu.h"
+#include "type.h"
 
 void notOp(Cpu* self, InstructionCode mc) {}
 void RtypeDispatcher(Cpu* self, InstructionCode mc) {

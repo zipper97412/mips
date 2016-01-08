@@ -8,10 +8,10 @@
 #include "instru_util.h"
 
 
-FILE* ouvrirFichier(char* nom);
+FILE* ouvrirFichier(const char* nom);
 void fermerFichier(FILE* fichier);
-void decoupe(FILE* fichier);
-InstructionCode deterOp(char* tab, InstructionCode* temp);
+InstructionCode* decoupe(FILE* fichier);
+InstructionCode deterOp(char* tab);
 int convertirRegistre(char* tab);
 
 #endif
