@@ -9,9 +9,9 @@ void runInstruction(Cpu* cpu, u32 instru) {
 
 void loadPgrm(RAM* ram, const char* filename) {
 	FILE* file = ouvrirFichier(filename);
-	
-	
-	
-	
+  
+
+
+
 	fermerFichier(file);
 }

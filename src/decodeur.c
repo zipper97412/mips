@@ -23,9 +23,9 @@ void fermerFichier(FILE* fichier)
 	fclose(fichier);
 }
 
-InstructionCode* decoupe(FILE* fichier)
+int decoupe(FILE* fichier, InstructionCode** pgrm)
 {
-	InstructionCode* pgrm = NULL;
+	*pgrm = NULL;
 	int pgrmLen = 0;
 	int i,e=0;
 	//InstructionType type;
@@ -47,18 +47,18 @@ InstructionCode* decoupe(FILE* fichier)
 			while(fgetc(fichier)!='\n');
 		}
 		tableau[i-1]='\0';
-	
+
 		if(tableau[0] != '#') //Si la ligne n'est pas un commentaire
 		{
-			pgrm = realloc(pgrm,sizeof(InstructionCode)*++pgrmLen);
-			pgrm[pgrmLen] = deterOp(tableau);
+			*pgrm = realloc(*pgrm,sizeof(InstructionCode)*++pgrmLen);
+			*pgrm[pgrmLen] = deterOp(tableau);
 		}
-		else 
+		else
 		{
 			//On s'en fiche ! La ligne entière est un commentaire.
 		}
 	}while(e==0);
-	return pgrm;
+	return pgrmLen;
 }
 
 InstructionCode deterOp(char* tableau)
@@ -72,7 +72,7 @@ InstructionCode deterOp(char* tableau)
 		i++;
 	} while(tableau[i-1] != ' ');
 	tab[i-1]='\0';
-	
+
 	if(strcmp(tab,"ADD") == 0)
 	{
 		temp.op = 0;
@@ -92,7 +92,7 @@ InstructionCode deterOp(char* tableau)
 				j++;
 			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
 			tab[j]='\0';
-			
+
 			if(k==0)
 			{
 				temp.rd=convertirRegistre(tab);
@@ -124,10 +124,10 @@ InstructionCode deterOp(char* tableau)
 				tab[j]=tableau[i];
 				i++;
 				j++;
-				
+
 			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
 			tab[j]='\0';
-			
+
 			if(k==0)
 			{
 				temp.rt=convertirRegistre(tab);
@@ -196,7 +196,7 @@ InstructionCode deterOp(char* tableau)
 				j++;
 			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
 			tab[j]='\0';
-			
+
 			if(k==0)
 			{
 				temp.rs=convertirRegistre(tab);
@@ -261,7 +261,7 @@ InstructionCode deterOp(char* tableau)
 				j++;
 			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
 			tab[j]='\0';
-			
+
 			if(k==0)
 			{
 				temp.rs=convertirRegistre(tab);
@@ -291,7 +291,7 @@ InstructionCode deterOp(char* tableau)
 				j++;
 			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
 			tab[j]='\0';
-			
+
 			if(k==0)
 			{
 				temp.rs=convertirRegistre(tab);
@@ -305,7 +305,7 @@ InstructionCode deterOp(char* tableau)
 				temp.immediat=atoi(tab);
 			}
 			k++;
-		}	
+		}
 	}
 
 	else if(strcmp(tab,"DIV") == 0)
@@ -328,7 +328,7 @@ InstructionCode deterOp(char* tableau)
 				j++;
 			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
 			tab[j]='\0';
-			
+
 			if(k==0)
 			{
 				temp.rs=convertirRegistre(tab);
@@ -378,7 +378,7 @@ InstructionCode deterOp(char* tableau)
 				j++;
 			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
 			tab[j]='\0';
-			
+
 			if(k==0)
 			{
 				temp.rt=convertirRegistre(tab);
@@ -403,7 +403,7 @@ InstructionCode deterOp(char* tableau)
 		temp.sa = 0;
 		temp.rs = 0;
 		temp.rt = 0;
-		
+
 		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
 		{
 			i++;
@@ -459,7 +459,7 @@ InstructionCode deterOp(char* tableau)
 				j++;
 			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
 			tab[j]='\0';
-			
+
 			if(k==0)
 			{
 				temp.rs=convertirRegistre(tab);
@@ -491,7 +491,7 @@ InstructionCode deterOp(char* tableau)
 				j++;
 			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
 			tab[j]='\0';
-			
+
 			if(k==0)
 			{
 				temp.rd=convertirRegistre(tab);
@@ -527,7 +527,7 @@ InstructionCode deterOp(char* tableau)
 				j++;
 			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
 			tab[j]='\0';
-			
+
 			if(k==0)
 			{
 				temp.rd=convertirRegistre(tab);
@@ -563,7 +563,7 @@ InstructionCode deterOp(char* tableau)
 				j++;
 			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
 			tab[j]='\0';
-			
+
 			if(k==0)
 			{
 				temp.rd=convertirRegistre(tab);
@@ -599,7 +599,7 @@ InstructionCode deterOp(char* tableau)
 				j++;
 			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
 			tab[j]='\0';
-			
+
 			if(k==0)
 			{
 				temp.rd=convertirRegistre(tab);
@@ -635,7 +635,7 @@ InstructionCode deterOp(char* tableau)
 				j++;
 			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
 			tab[j]='\0';
-			
+
 			if(k==0)
 			{
 				temp.rd=convertirRegistre(tab);
@@ -671,7 +671,7 @@ InstructionCode deterOp(char* tableau)
 				j++;
 			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
 			tab[j]='\0';
-			
+
 			if(k==0)
 			{
 				temp.rd=convertirRegistre(tab);
@@ -713,7 +713,7 @@ InstructionCode deterOp(char* tableau)
 				j++;
 			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && 				(tableau[i] != '\n'));
 			tab[j]='\0';
-			
+
 			if(k==0)
 			{
 				temp.rd=convertirRegistre(tab);
@@ -744,162 +744,162 @@ int convertirRegistre(char* tab)
 	{
 		return 0;
 	}
-	
+
 	else if(strcmp(tab,"at") == 0)
 	{
 		return 1;
 	}
-	
+
 	else if(strcmp(tab,"v0") == 0)
 	{
 		return 2;
 	}
-	
+
 	else if(strcmp(tab,"v1") == 0)
 	{
 		return 3;
 	}
-	
+
 	else if(strcmp(tab,"a0") == 0)
 	{
 		return 4;
 	}
-	
+
 	else if(strcmp(tab,"a1") == 0)
 	{
 		return 5;
 	}
-	
+
 	else if(strcmp(tab,"a2") == 0)
 	{
 		return 6;
 	}
-	
+
 	else if(strcmp(tab,"a3") == 0)
 	{
 		return 7;
 	}
-	
+
 	else if(strcmp(tab,"t0") == 0)
 	{
 		return 8;
 	}
-	
+
 	else if(strcmp(tab,"t1") == 0)
 	{
 		return 9;
 	}
-	
+
 	else if(strcmp(tab,"t2") == 0)
 	{
 		return 10;
 	}
-	
+
 	else if(strcmp(tab,"t3") == 0)
 	{
 		return 11;
 	}
-	
+
 	else if(strcmp(tab,"t4") == 0)
 	{
 		return 12;
 	}
-	
+
 	else if(strcmp(tab,"t5") == 0)
 	{
 		return 13;
 	}
-	
+
 	else if(strcmp(tab,"t6") == 0)
 	{
 		return 14;
 	}
-	
+
 	else if(strcmp(tab,"t7") == 0)
 	{
 		return 15;
 	}
-	
+
 	else if(strcmp(tab,"s0") == 0)
 	{
 		return 16;
 	}
-	
+
 	else if(strcmp(tab,"s1") == 0)
 	{
 		return 17;
 	}
-	
+
 	else if(strcmp(tab,"s2") == 0)
 	{
 		return 18;
 	}
-	
+
 	else if(strcmp(tab,"s3") == 0)
 	{
 		return 19;
 	}
-	
+
 	else if(strcmp(tab,"s4") == 0)
 	{
 		return 20;
 	}
-	
+
 	else if(strcmp(tab,"s5") == 0)
 	{
 		return 21;
 	}
-	
+
 	else if(strcmp(tab,"s6") == 0)
 	{
 		return 22;
 	}
-	
+
 	else if(strcmp(tab,"s7") == 0)
 	{
 		return 23;
 	}
-	
+
 	else if(strcmp(tab,"t8") == 0)
 	{
 		return 24;
 	}
-	
+
 	else if(strcmp(tab,"t9") == 0)
 	{
 		return 25;
 	}
-	
+
 	else if(strcmp(tab,"k0") == 0)
 	{
 		return 26;
 	}
-	
+
 	else if(strcmp(tab,"k1") == 0)
 	{
 		return 27;
 	}
-	
+
 	else if(strcmp(tab,"gp") == 0)
 	{
 		return 28;
 	}
-	
+
 	else if(strcmp(tab,"sp") == 0)
 	{
 		return 29;
 	}
-	
+
 	else if(strcmp(tab,"fp") == 0)
 	{
 		return 30;
 	}
-	
+
 	else if(strcmp(tab,"ra") == 0)
 	{
 		return 31;
 	}
-	
+
 	else
 	{
 		return atoi(tab);
