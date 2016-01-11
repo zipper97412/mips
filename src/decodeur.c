@@ -54,8 +54,8 @@ int decoupe(FILE* fichier, InstructionCode** pgrm)
 			tableau[i-1]='\0';//Ne pas oublier de terminer le tableau.
 			printf("\"%s\"\n", tableau);
 			pgrmLen++;
-			*pgrm = realloc(*pgrm, sizeof(InstructionCode) * pgrmLen);
-			(*pgrm)[pgrmLen-1] = deterOp(tableau);
+			//*pgrm = realloc(*pgrm, sizeof(InstructionCode) * pgrmLen);
+			//(*pgrm)[pgrmLen-1] = deterOp(tableau);
 		}
 		else
 		{
