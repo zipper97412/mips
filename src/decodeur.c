@@ -473,7 +473,7 @@ InstructionCode deterOp(char* tableau)
 			}
 			else if(k==1)
 			{
-				temp.rs=atoi(base);
+				temp.rs=atoi(tab);
 			}
 			k++;
 		}
@@ -808,7 +808,7 @@ InstructionCode deterOp(char* tableau)
 			}
 			else if(k==1)
 			{
-				temp.rs=atoi(base);
+				temp.rs=atoi(tab);
 			}
 			k++;
 		}
