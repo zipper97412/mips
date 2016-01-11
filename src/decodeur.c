@@ -28,7 +28,7 @@ int decoupe(FILE* fichier, InstructionCode** pgrm)
 	*pgrm = NULL;
 	int pgrmLen = 0;
 	int i;
-	char tableau[40];
+	char tableau[50];
 	do
 	{
 		i=0;
@@ -66,7 +66,7 @@ int decoupe(FILE* fichier, InstructionCode** pgrm)
 InstructionCode deterOp(char* tableau)
 {
 	int i=0,j=0,k=0;
-	char tab[10];
+	char tab[50];
 	InstructionCode temp;
 	do
 	{
@@ -346,11 +346,39 @@ InstructionCode deterOp(char* tableau)
 	else if(strcmp(tab,"J") == 0)
 	{
 		temp.op = 2;
+		j=0;
+		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
+		{
+			i++;
+		}
+		do
+		{
+			tab[j]=tableau[i];
+			i++;
+			j++;
+		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
+		tab[j]='\0';
+
+		temp.target=atoi(tab);
 	}
 
 	else if(strcmp(tab,"JAL") == 0)
 	{
 		temp.op = 3;
+		j=0;
+		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
+		{
+			i++;
+		}
+		do
+		{
+			tab[j]=tableau[i];
+			i++;
+			j++;
+		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
+		tab[j]='\0';
+
+		temp.target=atoi(tab);
 	}
 
 	else if(strcmp(tab,"JR") == 0)
@@ -360,6 +388,21 @@ InstructionCode deterOp(char* tableau)
 		temp.sa=0;
 		temp.rd=0;
 		temp.rt=0;
+		j=0;
+		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
+		{
+			i++;
+		}
+		do
+		{
+			tab[j]=tableau[i];
+			i++;
+			j++;
+		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
+		tab[j]='\0';
+
+		temp.rs=convertirRegistre(tab);
+		
 	}
 
 	else if(strcmp(tab,"LUI") == 0)
@@ -396,6 +439,44 @@ InstructionCode deterOp(char* tableau)
 	else if(strcmp(tab,"LW") == 0)
 	{
 		temp.op = 35;
+		j=0;
+		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
+		{
+			i++;
+		}
+		do
+		{
+			tab[j]=tableau[i];
+			i++;
+			j++;
+		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
+		tab[j]='\0';
+		temp.rt=convertirRegistre(tab);
+		
+		while(k<2)
+		{
+			j=0;
+			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',' || tableau[i] == '(' )
+			{
+				i++;
+			}
+			do
+			{
+				tab[j]=tableau[i];
+				i++;
+				j++;
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n') && tableau[i] != '(' && tableau[i] != ')' );
+			tab[j]='\0';
+			if(k==0)
+			{
+				temp.immediat=atoi(tab);
+			}
+			else if(k==1)
+			{
+				temp.rs=atoi(base);
+			}
+			k++;
+		}
 	}
 
 	else if(strcmp(tab,"MFHI") == 0)
@@ -693,6 +774,44 @@ InstructionCode deterOp(char* tableau)
 	else if(strcmp(tab,"SW") == 0)
 	{
 		temp.op = 43;
+		j=0;
+		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
+		{
+			i++;
+		}
+		do
+		{
+			tab[j]=tableau[i];
+			i++;
+			j++;
+		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
+		tab[j]='\0';
+		temp.rt=convertirRegistre(tab);
+		
+		while(k<2)
+		{
+			j=0;
+			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',' || tableau[i] == '(' )
+			{
+				i++;
+			}
+			do
+			{
+				tab[j]=tableau[i];
+				i++;
+				j++;
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n') && tableau[i] != '(' && tableau[i] != ')' );
+			tab[j]='\0';
+			if(k==0)
+			{
+				temp.immediat=atoi(tab);
+			}
+			else if(k==1)
+			{
+				temp.rs=atoi(base);
+			}
+			k++;
+		}
 	}
 
 
