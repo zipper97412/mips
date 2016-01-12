@@ -25,7 +25,6 @@ int main()
 	int nbInstru = 0;
 	InstructionCode* code =NULL;
 	FILE* fic=ouvrirFichier("test.as");
-	printf("\"%#010x\"\n", (unsigned int)deterOp("ADD $t2, $t0, $t1").raw);
 	code = decoupe(fic, &nbInstru);
 	for(i=0;i<nbInstru;i++)
 	{

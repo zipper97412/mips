@@ -45,17 +45,19 @@ InstructionCode* decoupe(FILE* fichier, int* pgrmLen)
 			i++;
 		}
 		tableau[i]='\0';//Ne pas oublier de terminer le tableau.
-		printf("\"%s\"\n", tableau);
-		//nbInstruction++;
-		//pgrm = realloc(pgrm, nbInstruction*sizeof(InstructionCode));
-		//pgrm[nbInstruction-1] = deterOp(tableau);
-
-		printf("\"%#010x\"\n", (unsigned int)deterOp(tableau).raw);
 
 		if(c==EOF) //Si nous sommes arrivés à la fin du fichier, nous sortons de cette fonction
 			job = 0;
-		if(c=='#')//Si le dernier caractère lu est un commentaire, nous lisons l'intégralité de la ligne pour passer à la ligne suivante
+		else if(c=='#')//Si le dernier caractère lu est un commentaire, nous lisons l'intégralité de la ligne pour passer à la ligne suivante
 			while(fgetc(fichier)!='\n');
+		else {
+			printf("\"%s\"\n", tableau);
+			nbInstruction++;
+			pgrm = realloc(pgrm, nbInstruction*sizeof(InstructionCode));
+			pgrm[nbInstruction-1] = deterOp(tableau);
+
+			//printf("\"%#010x\"\n", (unsigned int)deterOp(tableau).raw);
+		}
 
 	} //Boucle tant que nous ne sommes pas arrivés à la fin du fichier
 
@@ -357,7 +359,6 @@ InstructionCode deterOp(char* tableau)
 				temp.rt=convertirRegistre(tab);
 			nextLex(tab, tableau, &i);
 				temp.sa=atoi(tab);
-		nextLex(tab, tableau, &i);
 	}
 
 	else if(strcmp(tab,"SUB") == 0)
