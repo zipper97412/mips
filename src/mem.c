@@ -56,8 +56,10 @@ void MemMap_display(MemMap* self) {
 }
 
 
-RAM RAM_new() {
+RAM RAM_new(u8* tab, int len) {
   RAM ram;
+  ram.data = tab;
+  ram.len = len;
   return ram;
 }
 void RAM_write(RAM* self, u32 rel_addr, u8 data) {
@@ -89,7 +91,7 @@ u32 RAM_read_word(RAM* self, u32 rel_addr) {
 void RAM_display(RAM* self, u32 ram_begin) {
   int i;
   printf("\nRAM(%#010x):\n",(unsigned int)ram_begin);
-  for(i=0;i<sizeof(self->data);i++) {
+  for(i=0;i<self->len;i++) {
     if ((i%16) == 0) {
       printf("%#010x(%d):    \t[",(unsigned int)(i+ram_begin),i);
     }

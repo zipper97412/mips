@@ -5,6 +5,7 @@
 
 Regs Regs_new() {
   Regs regs;
+  regs.pc = 0;
   return regs;
 }
 void Regs_display(Regs* self) {
@@ -59,5 +60,3 @@ ExecContainer Cpu_decode(Cpu* self, InstructionCode instru) {
 void Cpu_exec(Cpu* self, ExecContainer container) {
   container.func(self, container.code);
 }
-
-

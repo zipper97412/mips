@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "type.h"
-#include "instru_util.h"
 #include "decodeur.h"
 
 //MANQUE : J JAL JR LW SW
@@ -24,13 +19,13 @@ void fermerFichier(FILE* fichier)
 	fclose(fichier);
 }
 
-int isIn(char c, const char* delim, int nbelem) {
+/*int isIn(char c, const char* delim, int nbelem) {
 	for(int i=0;i<nbelem;i++) {
 		if(c == delim[i])
 			return 1;
 	}
 	return 0;
-}
+}*/
 /* Fonction lisant un fichier, et remplissant un tableau avec le contenu du fichier*/
 InstructionCode* decoupe(FILE* fichier, int* pgrmLen)
 {
@@ -40,7 +35,7 @@ InstructionCode* decoupe(FILE* fichier, int* pgrmLen)
 	char tableau[100];
 	char c;
 
-	while(job);
+	while(job)
 	{
 		i=0;
 		//char delimiter[] = {'#','\n'};
@@ -80,33 +75,31 @@ void nextLex(char* outBuffer, char* inBuffer, int* index) {
 					(inBuffer[*index] == ',') ||
 					(inBuffer[*index] == '#') ||
 					(inBuffer[*index] == ';') ||
+					(inBuffer[*index] == '\n') ||
 					(inBuffer[*index] == '(') ||
 					(inBuffer[*index] == ')'))
 	{
-		printf("premier while\n");
 		if( (inBuffer[*index] == '#') || (inBuffer[*index] == '\n')) {
 			fprintf(stderr, "erreur de parseur\n");
 			exit(0);
 		}
 		*index += 1;
 	}
-	*index += 1;
 	while(	(inBuffer[*index] != ' ') &&
 					(inBuffer[*index] != '$') &&
 					(inBuffer[*index] != ',') &&
 					(inBuffer[*index] != '#') &&
 					(inBuffer[*index] != ';') &&
+					(inBuffer[*index] != '\n') &&
 					(inBuffer[*index] != '(') &&
 					(inBuffer[*index] != ')') &&
 					(inBuffer[*index] != EOF))
 	{
-		printf("deuxieme while\n");
 		outBuffer[j]=inBuffer[*index];
 		*index += 1;
 		j++;
 	}
 	outBuffer[j]='\0';//Ne pas oublier de terminer le tableau.
-	printf("nextLex output: \"%s\"\n", outBuffer);
 }
 
 /*Fonction permettant de remplir l'union de structure*/
@@ -408,7 +401,7 @@ InstructionCode deterOp(char* tableau)
 	else
 	{
 		fprintf(stderr,"Mauvaise instruction ! %s\n", tab);
-		exit(1);
+		temp.raw = 0;
 	}
 	return temp;
 }

@@ -4,9 +4,10 @@
 
 
 typedef struct RAM {
-  u8 data[1024];
+  u8* data;
+  int len;
 } RAM;
-RAM RAM_new();
+RAM RAM_new(u8* ramTab, int len);
 void RAM_write(RAM* self, u32 rel_addr, u8 data);
 void RAM_write_word(RAM* self, u32 rel_addr, u32 data);
 
