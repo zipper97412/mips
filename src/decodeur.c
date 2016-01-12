@@ -7,6 +7,7 @@
 
 //MANQUE : J JAL JR LW SW
 
+/* Fonction permettant d'ouvrir les fichiers et de gérer les possibles erreurs */
 FILE* ouvrirFichier(const char* nom)
 {
 	FILE* fichierTest = fopen(nom, "r+");
@@ -23,12 +24,13 @@ void fermerFichier(FILE* fichier)
 	fclose(fichier);
 }
 
+/* Fonction lisant un fichier, et remplissant un tableau avec le contenu du fichier*/
 int decoupe(FILE* fichier, InstructionCode** pgrm)
 {
 	*pgrm = NULL;
 	int pgrmLen = 0;
 	int i;
-	char tableau[40];
+	char tableau[50];
 	do
 	{
 		i=0;
@@ -36,12 +38,12 @@ int decoupe(FILE* fichier, InstructionCode** pgrm)
 		{
 			tableau[i]=fgetc(fichier);
 			i++;
-		} while(tableau[i-1] != '#' && tableau[i-1] != EOF && tableau[i-1] != '\n');
-		if(tableau[i-1]==EOF)
+		} while(tableau[i-1] != '#' && tableau[i-1] != EOF && tableau[i-1] != '\n'); //Nous prenons ici la première ligne du fichier
+		if(tableau[i-1]==EOF) //Si nous sommes arrivés à la fin du fichier, nous sortons de cette fonction
 		{
 			break;
 		}
-		if(tableau[i-1]=='#')
+		if(tableau[i-1]=='#')//Si le dernier caractère lu est un commentaire, nous lisons l'intégralité de la ligne pour passer à la ligne suivante
 		{
 			while(fgetc(fichier)!='\n');
 		}
@@ -49,34 +51,40 @@ int decoupe(FILE* fichier, InstructionCode** pgrm)
 		
 		if(tableau[0] != '#') //Si la ligne n'est pas un commentaire
 		{
-			tableau[i-1]='\0';
+			tableau[i-1]='\0';//Ne pas oublier de terminer le tableau.
 			printf("\"%s\"\n", tableau);
 			pgrmLen++;
-			*pgrm = realloc(*pgrm, sizeof(InstructionCode) * pgrmLen);
-			(*pgrm)[pgrmLen-1] = deterOp(tableau);
+			//*pgrm = realloc(*pgrm, sizeof(InstructionCode) * pgrmLen);
+			//(*pgrm)[pgrmLen-1] = deterOp(tableau);
 		}
 		else
 		{
 			//On s'en fiche ! La ligne entière est un commentaire.
 		}
-	}while(1);
+	}while(1); //Boucle tant que nous ne sommes pas arrivés à la fin du fichier
 	return pgrmLen;
 }
 
+/*Fonction permettant de remplir l'union de structure*/
 InstructionCode deterOp(char* tableau)
 {
 	int i=0,j=0,k=0;
-	char tab[10];
+	char tab[50];
 	InstructionCode temp;
 	do
 	{
 		tab[i]=tableau[i];
 		i++;
-	} while(tableau[i-1] != ' ');
-	tab[i-1]='\0';
+	} while(tableau[i-1] != ' '); // Le tableau "tab" contient l'instruction.
+	tab[i-1]='\0';//Ne pas oublier de terminer le tableau.
+
+/*Nous réalisons alors beaucoup de cas pour trouver quelle est l'instruction*/
+/*Nous remplissons alors les différents champs (op, rs, rt, etc...) en fonction de l'instruction*/
+
 
 	if(strcmp(tab,"ADD") == 0)
 	{
+		/* Remplissage des champs*/ 
 		temp.op = 0;
 		temp.special = 32;
 		temp.sa = 0;
@@ -86,24 +94,26 @@ InstructionCode deterOp(char* tableau)
 			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
 			{
 				i++;
-			}
+			}//Nous sautons la partie qui ne nous intéresse pas
 			do
 			{
 				tab[j]=tableau[i];
 				i++;
 				j++;
 			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-			tab[j]='\0';
-
-			if(k==0)
+			//Nous remplissons "tab" avec le premier champ, puis au 2ème tour de boucle avec le 2ème, etc...
+			
+			tab[j]='\0';//Ne pas oublier de terminer le tableau.
+			
+			if(k==0)//Premier champ
 			{
 				temp.rd=convertirRegistre(tab);
 			}
-			else if (k==1)
+			else if (k==1)//Deuxième champ
 			{
 				temp.rs=convertirRegistre(tab);
 			}
-			else if (k==2)
+			else if (k==2)//Troisième champ
 			{
 				temp.rt=convertirRegistre(tab);
 			}
@@ -111,6 +121,8 @@ InstructionCode deterOp(char* tableau)
 		}
 	}
 
+	/*Raisonnement similaire pour toutes les instruction*/
+	
 	else if(strcmp(tab,"ADDI") == 0)
 	{
 		temp.op = 8;
@@ -346,11 +358,39 @@ InstructionCode deterOp(char* tableau)
 	else if(strcmp(tab,"J") == 0)
 	{
 		temp.op = 2;
+		j=0;
+		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
+		{
+			i++;
+		}
+		do
+		{
+			tab[j]=tableau[i];
+			i++;
+			j++;
+		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
+		tab[j]='\0';
+
+		temp.target=atoi(tab);
 	}
 
 	else if(strcmp(tab,"JAL") == 0)
 	{
 		temp.op = 3;
+		j=0;
+		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
+		{
+			i++;
+		}
+		do
+		{
+			tab[j]=tableau[i];
+			i++;
+			j++;
+		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
+		tab[j]='\0';
+
+		temp.target=atoi(tab);
 	}
 
 	else if(strcmp(tab,"JR") == 0)
@@ -360,6 +400,21 @@ InstructionCode deterOp(char* tableau)
 		temp.sa=0;
 		temp.rd=0;
 		temp.rt=0;
+		j=0;
+		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
+		{
+			i++;
+		}
+		do
+		{
+			tab[j]=tableau[i];
+			i++;
+			j++;
+		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
+		tab[j]='\0';
+
+		temp.rs=convertirRegistre(tab);
+		
 	}
 
 	else if(strcmp(tab,"LUI") == 0)
@@ -396,6 +451,44 @@ InstructionCode deterOp(char* tableau)
 	else if(strcmp(tab,"LW") == 0)
 	{
 		temp.op = 35;
+		j=0;
+		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
+		{
+			i++;
+		}
+		do
+		{
+			tab[j]=tableau[i];
+			i++;
+			j++;
+		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
+		tab[j]='\0';
+		temp.rt=convertirRegistre(tab);
+		
+		while(k<2)
+		{
+			j=0;
+			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',' || tableau[i] == '(' )
+			{
+				i++;
+			}
+			do
+			{
+				tab[j]=tableau[i];
+				i++;
+				j++;
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n') && tableau[i] != '(' && tableau[i] != ')' );
+			tab[j]='\0';
+			if(k==0)
+			{
+				temp.immediat=atoi(tab);
+			}
+			else if(k==1)
+			{
+				temp.rs=atoi(tab);
+			}
+			k++;
+		}
 	}
 
 	else if(strcmp(tab,"MFHI") == 0)
@@ -693,6 +786,44 @@ InstructionCode deterOp(char* tableau)
 	else if(strcmp(tab,"SW") == 0)
 	{
 		temp.op = 43;
+		j=0;
+		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
+		{
+			i++;
+		}
+		do
+		{
+			tab[j]=tableau[i];
+			i++;
+			j++;
+		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
+		tab[j]='\0';
+		temp.rt=convertirRegistre(tab);
+		
+		while(k<2)
+		{
+			j=0;
+			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',' || tableau[i] == '(' )
+			{
+				i++;
+			}
+			do
+			{
+				tab[j]=tableau[i];
+				i++;
+				j++;
+			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n') && tableau[i] != '(' && tableau[i] != ')' );
+			tab[j]='\0';
+			if(k==0)
+			{
+				temp.immediat=atoi(tab);
+			}
+			else if(k==1)
+			{
+				temp.rs=atoi(tab);
+			}
+			k++;
+		}
 	}
 
 
