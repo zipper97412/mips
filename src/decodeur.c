@@ -24,13 +24,13 @@ void fermerFichier(FILE* fichier)
 	fclose(fichier);
 }
 
-int isIn(char c, const char* delim, int nbelem) {
-	for(int i=0;i<nbelem;i++) {
-		if(c == delim[i])
-			return 1;
-	}
-	return 0;
-}
+// int isIn(char c, const char* delim, int nbelem) {
+// 	for(int i=0;i<nbelem;i++) {
+// 		if(c == delim[i])
+// 			return 1;
+// 	}
+// 	return 0;
+// }
 /* Fonction lisant un fichier, et remplissant un tableau avec le contenu du fichier*/
 InstructionCode* decoupe(FILE* fichier, int* pgrmLen)
 {
@@ -43,8 +43,8 @@ InstructionCode* decoupe(FILE* fichier, int* pgrmLen)
 	while(job);
 	{
 		i=0;
-		char delimiter[] = {'#','\n'};
-		while( ((c=fgetc(fichier)) != EOF ) && isIn(c, delimiter, 2))
+		//char delimiter[] = {'#','\n'};
+		while( ((c=fgetc(fichier)) != EOF ) && (c != '#') && (c != '\n') )
 		{
 			tableau[i]=c;
 			i++;
@@ -72,21 +72,33 @@ InstructionCode* decoupe(FILE* fichier, int* pgrmLen)
 void nextLex(char* outBuffer, char* inBuffer, int* index) {
 
 	int j=0;
-	char delimiter[] = {' ','$',',','#','\n','(',')'};
-	char errordelimiter[] = {'\n','#'};
-	printf("%d\n", isIn(inBuffer[*index], delimiter,7));
+	//char delimiter[] = {' ','$',',','#','\n','(',')'};
+	//char errordelimiter[] = {'\n','#'};
 
-	while(isIn(inBuffer[*index], delimiter,7))
+	while( 	(inBuffer[*index] == ' ') ||
+					(inBuffer[*index] == '$') ||
+					(inBuffer[*index] == ',') ||
+					(inBuffer[*index] == '#') ||
+					(inBuffer[*index] == ';') ||
+					(inBuffer[*index] == '(') ||
+					(inBuffer[*index] == ')'))
 	{
 		printf("premier while\n");
-		if( isIn(inBuffer[*index], errordelimiter,2)) {
+		if( (inBuffer[*index] == '#') || (inBuffer[*index] == '\n')) {
 			fprintf(stderr, "erreur de parseur\n");
 			exit(0);
 		}
 		*index += 1;
 	}
 	*index += 1;
-	while(!isIn(inBuffer[*index], delimiter,7) && (inBuffer[*index] != EOF));
+	while(	(inBuffer[*index] != ' ') &&
+					(inBuffer[*index] != '$') &&
+					(inBuffer[*index] != ',') &&
+					(inBuffer[*index] != '#') &&
+					(inBuffer[*index] != ';') &&
+					(inBuffer[*index] != '(') &&
+					(inBuffer[*index] != ')') &&
+					(inBuffer[*index] != EOF))
 	{
 		printf("deuxieme while\n");
 		outBuffer[j]=inBuffer[*index];
