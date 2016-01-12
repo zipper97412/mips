@@ -3,7 +3,7 @@
 #include <string.h>
 #include "decodeur.h"
 
-const char *tab[]= {
+/*const char *tab[]= {
 	"ADDI $t0, $zero, 5",
 	"ADD $t2, $t0, $t1",
 	"SUB $t3, $t0, $t2",
@@ -17,16 +17,17 @@ const char *tab[]= {
 	"AND $t8, $t0, $t3",
 	"OR $t9, $t0, $t1",
 	"XOR $s0, $t0, $t1"
-	};
+	};*/
 
 int main()
 {
-	int i;
+	int i=0;
 	InstructionCode* code;
 	FILE* fic=ouvrirFichier("test.as");
-	for(i=0;i<decoupe(fic, &code);i++)
+	int nb = decoupe(fic, &code);
+	for(i=0;i<nb;i++)
 	{
-		printf("%#010x\n",(unsigned int)code[i]);
+		printf("%#010x\n", (unsigned int)code[i].raw);
 	}
 	return 0;
 }
