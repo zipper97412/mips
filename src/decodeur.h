@@ -10,7 +10,7 @@
 
 FILE* ouvrirFichier(const char* nom);
 void fermerFichier(FILE* fichier);
-int decoupe(FILE* fichier, InstructionCode** pgrm);
+InstructionCode* decoupe(FILE* fichier, int* pgrmLen);
 InstructionCode deterOp(char* tab);
 int convertirRegistre(char* tab);
 

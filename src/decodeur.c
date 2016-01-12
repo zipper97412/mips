@@ -24,138 +24,116 @@ void fermerFichier(FILE* fichier)
 	fclose(fichier);
 }
 
+int isIn(char c, const char* delim, int nbelem) {
+	for(int i=0;i<nbelem;i++) {
+		if(c == delim[i])
+			return 1;
+	}
+	return 0;
+}
 /* Fonction lisant un fichier, et remplissant un tableau avec le contenu du fichier*/
-int decoupe(FILE* fichier, InstructionCode** pgrm)
+InstructionCode* decoupe(FILE* fichier, int* pgrmLen)
 {
-	*pgrm = NULL;
-	int pgrmLen = 0;
-	int i;
-	char tableau[50];
-	do
+	InstructionCode* pgrm = NULL;
+	int nbInstruction = 0;
+	int i, job = 1;
+	char tableau[100];
+	char c;
+
+	while(job);
 	{
 		i=0;
-		do
+		char delimiter[] = {'#','\n'};
+		while( ((c=fgetc(fichier)) != EOF ) && isIn(c, delimiter, 2))
 		{
-			tableau[i]=fgetc(fichier);
+			tableau[i]=c;
 			i++;
-		} while(tableau[i-1] != '#' && tableau[i-1] != EOF && tableau[i-1] != '\n'); //Nous prenons ici la première ligne du fichier
-		if(tableau[i-1]==EOF) //Si nous sommes arrivés à la fin du fichier, nous sortons de cette fonction
-		{
-			break;
 		}
-		if(tableau[i-1]=='#')//Si le dernier caractère lu est un commentaire, nous lisons l'intégralité de la ligne pour passer à la ligne suivante
-		{
+		tableau[i]='\0';//Ne pas oublier de terminer le tableau.
+		printf("\"%s\"\n", tableau);
+		//nbInstruction++;
+		//pgrm = realloc(pgrm, nbInstruction*sizeof(InstructionCode));
+		//pgrm[nbInstruction-1] = deterOp(tableau);
+
+		printf("\"%#010x\"\n", (unsigned int)deterOp(tableau).raw);
+
+		if(c==EOF) //Si nous sommes arrivés à la fin du fichier, nous sortons de cette fonction
+			job = 0;
+		if(c=='#')//Si le dernier caractère lu est un commentaire, nous lisons l'intégralité de la ligne pour passer à la ligne suivante
 			while(fgetc(fichier)!='\n');
+
+	} //Boucle tant que nous ne sommes pas arrivés à la fin du fichier
+
+	*pgrmLen = nbInstruction;
+	return pgrm;
+}
+
+
+void nextLex(char* outBuffer, char* inBuffer, int* index) {
+
+	int j=0;
+	char delimiter[] = {' ','$',',','#','\n','(',')'};
+	char errordelimiter[] = {'\n','#'};
+	printf("%d\n", isIn(inBuffer[*index], delimiter,7));
+
+	while(isIn(inBuffer[*index], delimiter,7))
+	{
+		printf("premier while\n");
+		if( isIn(inBuffer[*index], errordelimiter,2)) {
+			fprintf(stderr, "erreur de parseur\n");
+			exit(0);
 		}
-		
-		
-		if(tableau[0] != '#') //Si la ligne n'est pas un commentaire
-		{
-			tableau[i-1]='\0';//Ne pas oublier de terminer le tableau.
-			printf("\"%s\"\n", tableau);
-			pgrmLen++;
-			//*pgrm = realloc(*pgrm, sizeof(InstructionCode) * pgrmLen);
-			//(*pgrm)[pgrmLen-1] = deterOp(tableau);
-		}
-		else
-		{
-			//On s'en fiche ! La ligne entière est un commentaire.
-		}
-	}while(1); //Boucle tant que nous ne sommes pas arrivés à la fin du fichier
-	return pgrmLen;
+		*index += 1;
+	}
+	*index += 1;
+	while(!isIn(inBuffer[*index], delimiter,7) && (inBuffer[*index] != EOF));
+	{
+		printf("deuxieme while\n");
+		outBuffer[j]=inBuffer[*index];
+		*index += 1;
+		j++;
+	}
+	outBuffer[j]='\0';//Ne pas oublier de terminer le tableau.
+	printf("nextLex output: \"%s\"\n", outBuffer);
 }
 
 /*Fonction permettant de remplir l'union de structure*/
 InstructionCode deterOp(char* tableau)
 {
-	int i=0,j=0,k=0;
+	int i=0;
 	char tab[50];
 	InstructionCode temp;
-	do
-	{
-		tab[i]=tableau[i];
-		i++;
-	} while(tableau[i-1] != ' '); // Le tableau "tab" contient l'instruction.
-	tab[i-1]='\0';//Ne pas oublier de terminer le tableau.
+	nextLex(tab, tableau, &i);
 
 /*Nous réalisons alors beaucoup de cas pour trouver quelle est l'instruction*/
 /*Nous remplissons alors les différents champs (op, rs, rt, etc...) en fonction de l'instruction*/
 
-
 	if(strcmp(tab,"ADD") == 0)
 	{
-		/* Remplissage des champs*/ 
+		/* Remplissage des champs*/
 		temp.op = 0;
 		temp.special = 32;
 		temp.sa = 0;
-		while(k<3)
-		{
-			j=0;
-			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-			{
-				i++;
-			}//Nous sautons la partie qui ne nous intéresse pas
-			do
-			{
-				tab[j]=tableau[i];
-				i++;
-				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-			//Nous remplissons "tab" avec le premier champ, puis au 2ème tour de boucle avec le 2ème, etc...
-			
-			tab[j]='\0';//Ne pas oublier de terminer le tableau.
-			
-			if(k==0)//Premier champ
-			{
-				temp.rd=convertirRegistre(tab);
-			}
-			else if (k==1)//Deuxième champ
-			{
-				temp.rs=convertirRegistre(tab);
-			}
-			else if (k==2)//Troisième champ
-			{
-				temp.rt=convertirRegistre(tab);
-			}
-			k++;
-		}
+		nextLex(tab, tableau, &i);
+		temp.rd=convertirRegistre(tab);
+		nextLex(tab, tableau, &i);
+		temp.rs=convertirRegistre(tab);
+		nextLex(tab, tableau, &i);
+		temp.rt=convertirRegistre(tab);
 	}
 
 	/*Raisonnement similaire pour toutes les instruction*/
-	
+
 	else if(strcmp(tab,"ADDI") == 0)
 	{
 		temp.op = 8;
-		while(k<3)
-		{
-			j=0;
-			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-			{
-				i++;
-			}
-			do
-			{
-				tab[j]=tableau[i];
-				i++;
-				j++;
+		nextLex(tab, tableau, &i);
+		temp.rt=convertirRegistre(tab);
+		nextLex(tab, tableau, &i);
+		temp.rs=convertirRegistre(tab);
+		nextLex(tab, tableau, &i);
+		temp.immediat=atoi(tab);
 
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-			tab[j]='\0';
-
-			if(k==0)
-			{
-				temp.rt=convertirRegistre(tab);
-			}
-			else if (k==1)
-			{
-				temp.rs=convertirRegistre(tab);
-			}
-			else if (k==2)
-			{
-				temp.immediat=atoi(tab);
-			}
-			k++;
-		}
 	}
 
 	else if(strcmp(tab,"AND") == 0)
@@ -163,163 +141,58 @@ InstructionCode deterOp(char* tableau)
 		temp.op = 0;
 		temp.special = 36;
 		temp.sa = 0;
-		while(k<3)
-		{
-			j=0;
-			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-			{
-				i++;
-			}
-			do
-			{
-				tab[j]=tableau[i];
-				i++;
-				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-			tab[j]='\0';
-			if(k==0)
-			{
-				temp.rd=convertirRegistre(tab);
-			}
-			else if (k==1)
-			{
-				temp.rs=convertirRegistre(tab);
-			}
-			else if (k==2)
-			{
-				temp.rt=convertirRegistre(tab);
-			}
-			k++;
-		}
+		nextLex(tab, tableau, &i);
+		temp.rd=convertirRegistre(tab);
+		nextLex(tab, tableau, &i);
+		temp.rs=convertirRegistre(tab);
+		nextLex(tab, tableau, &i);
+		temp.rt=convertirRegistre(tab);
 	}
 
 	else if(strcmp(tab,"BEQ") == 0)
 	{
 		temp.op = 4;
-		while(k<3)
-		{
-			j=0;
-			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-			{
-				i++;
-			}
-			do
-			{
-				tab[j]=tableau[i];
-				i++;
-				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-			tab[j]='\0';
+		nextLex(tab, tableau, &i);
+		temp.rs=convertirRegistre(tab);
+		nextLex(tab, tableau, &i);
+		temp.rt=convertirRegistre(tab);
+		nextLex(tab, tableau, &i);
+		temp.immediat=atoi(tab);
 
-			if(k==0)
-			{
-				temp.rs=convertirRegistre(tab);
-			}
-			else if (k==1)
-			{
-				temp.rt=convertirRegistre(tab);
-			}
-			else if (k==2)
-			{
-				temp.immediat=atoi(tab);
-			}
-			k++;
-		}
 	}
 
 	else if(strcmp(tab,"BGTZ") == 0)
 	{
 		temp.op = 7;
 		temp.rt = 0;
-		while(k<2)
-		{
-			j=0;
-			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-			{
-				i++;
-			}
-			do
-			{
-				tab[j]=tableau[i];
-				i++;
-				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) &&(tableau[i] != '\n'));
-			tab[j]='\0';
-			if(k==0)
-			{
-				temp.rs=convertirRegistre(tab);
-			}
-			else if (k==1)
-			{
-				temp.immediat=atoi(tab);
-			}
-			k++;
-		}
+		nextLex(tab, tableau, &i);
+		temp.rs=convertirRegistre(tab);
+		nextLex(tab, tableau, &i);
+		temp.immediat=atoi(tab);
+
 	}
 
 	else if(strcmp(tab,"BLEZ") == 0)
 	{
 		temp.op = 6;
 		temp.rt = 0;
-		while(k<2)
-		{
-			j=0;
-			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-			{
-				i++;
-			}
-			do
-			{
-				tab[j]=tableau[i];
-				i++;
-				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-			tab[j]='\0';
+		nextLex(tab, tableau, &i);
+		temp.rs=convertirRegistre(tab);
+		nextLex(tab, tableau, &i);
+		temp.immediat=atoi(tab);
 
-			if(k==0)
-			{
-				temp.rs=convertirRegistre(tab);
-			}
-			else if (k==1)
-			{
-				temp.immediat=atoi(tab);
-			}
-			k++;
-		}
 	}
 
 	else if(strcmp(tab,"BNE") == 0)
 	{
 		temp.op = 5;
-		while(k<3)
-		{
-			j=0;
-			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-			{
-				i++;
-			}
-			do
-			{
-				tab[j]=tableau[i];
-				i++;
-				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-			tab[j]='\0';
-
-			if(k==0)
-			{
+		nextLex(tab, tableau, &i);
 				temp.rs=convertirRegistre(tab);
-			}
-			else if (k==1)
-			{
+			nextLex(tab, tableau, &i);
 				temp.rt=convertirRegistre(tab);
-			}
-			else if (k==2)
-			{
+			nextLex(tab, tableau, &i);
 				temp.immediat=atoi(tab);
-			}
-			k++;
-		}
+
 	}
 
 	else if(strcmp(tab,"DIV") == 0)
@@ -328,68 +201,24 @@ InstructionCode deterOp(char* tableau)
 		temp.special = 26;
 		temp.sa = 0;
 		temp.rd = 0;
-		while(k<2)
-		{
-			j=0;
-			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-			{
-				i++;
-			}
-			do
-			{
-				tab[j]=tableau[i];
-				i++;
-				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-			tab[j]='\0';
-
-			if(k==0)
-			{
+		nextLex(tab, tableau, &i);
 				temp.rs=convertirRegistre(tab);
-			}
-			else if (k==1)
-			{
+			nextLex(tab, tableau, &i);
 				temp.rt=convertirRegistre(tab);
-			}
-			k++;
-		}
+
 	}
 
 	else if(strcmp(tab,"J") == 0)
 	{
 		temp.op = 2;
-		j=0;
-		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-		{
-			i++;
-		}
-		do
-		{
-			tab[j]=tableau[i];
-			i++;
-			j++;
-		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-		tab[j]='\0';
-
+		nextLex(tab, tableau, &i);
 		temp.target=atoi(tab);
 	}
 
 	else if(strcmp(tab,"JAL") == 0)
 	{
 		temp.op = 3;
-		j=0;
-		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-		{
-			i++;
-		}
-		do
-		{
-			tab[j]=tableau[i];
-			i++;
-			j++;
-		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-		tab[j]='\0';
-
+		nextLex(tab, tableau, &i);
 		temp.target=atoi(tab);
 	}
 
@@ -400,95 +229,30 @@ InstructionCode deterOp(char* tableau)
 		temp.sa=0;
 		temp.rd=0;
 		temp.rt=0;
-		j=0;
-		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-		{
-			i++;
-		}
-		do
-		{
-			tab[j]=tableau[i];
-			i++;
-			j++;
-		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-		tab[j]='\0';
-
+		nextLex(tab, tableau, &i);
 		temp.rs=convertirRegistre(tab);
-		
+
 	}
 
 	else if(strcmp(tab,"LUI") == 0)
 	{
 		temp.op = 15;
 		temp.rs = 0;
-		while(k<2)
-		{
-			j=0;
-			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-			{
-				i++;
-			}
-			do
-			{
-				tab[j]=tableau[i];
-				i++;
-				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-			tab[j]='\0';
-
-			if(k==0)
-			{
+		nextLex(tab, tableau, &i);
 				temp.rt=convertirRegistre(tab);
-			}
-			else if (k==1)
-			{
+			nextLex(tab, tableau, &i);
 				temp.immediat=atoi(tab);
-			}
-			k++;
-		}
 	}
 
 	else if(strcmp(tab,"LW") == 0)
 	{
 		temp.op = 35;
-		j=0;
-		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-		{
-			i++;
-		}
-		do
-		{
-			tab[j]=tableau[i];
-			i++;
-			j++;
-		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-		tab[j]='\0';
+		nextLex(tab, tableau, &i);
 		temp.rt=convertirRegistre(tab);
-		
-		while(k<2)
-		{
-			j=0;
-			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',' || tableau[i] == '(' )
-			{
-				i++;
-			}
-			do
-			{
-				tab[j]=tableau[i];
-				i++;
-				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n') && tableau[i] != '(' && tableau[i] != ')' );
-			tab[j]='\0';
-			if(k==0)
-			{
+		nextLex(tab, tableau, &i);
 				temp.immediat=atoi(tab);
-			}
-			else if(k==1)
-			{
+		nextLex(tab, tableau, &i);
 				temp.rs=atoi(tab);
-			}
-			k++;
-		}
 	}
 
 	else if(strcmp(tab,"MFHI") == 0)
@@ -498,18 +262,7 @@ InstructionCode deterOp(char* tableau)
 		temp.sa = 0;
 		temp.rs = 0;
 		temp.rt = 0;
-
-		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-		{
-			i++;
-		}
-		do
-		{
-			tab[j]=tableau[i];
-			i++;
-			j++;
-		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-		tab[j]='\0';
+		nextLex(tab, tableau, &i);
 		temp.rd=convertirRegistre(tab);
 	}
 
@@ -520,17 +273,7 @@ InstructionCode deterOp(char* tableau)
 		temp.sa = 0;
 		temp.rs = 0;
 		temp.rt = 0;
-		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-		{
-			i++;
-		}
-		do
-		{
-			tab[j]=tableau[i];
-			i++;
-			j++;
-		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-		tab[j]='\0';
+		nextLex(tab, tableau, &i);
 		temp.rd=convertirRegistre(tab);
 	}
 
@@ -540,31 +283,10 @@ InstructionCode deterOp(char* tableau)
 		temp.special = 24;
 		temp.sa = 0;
 		temp.rd = 0;
-		while(k<2)
-		{
-			j=0;
-			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-			{
-				i++;
-			}
-			do
-			{
-				tab[j]=tableau[i];
-				i++;
-				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-			tab[j]='\0';
-
-			if(k==0)
-			{
+		nextLex(tab, tableau, &i);
 				temp.rs=convertirRegistre(tab);
-			}
-			else if (k==1)
-			{
+			nextLex(tab, tableau, &i);
 				temp.rt=convertirRegistre(tab);
-			}
-			k++;
-		}
 	}
 
 	else if(strcmp(tab,"OR") == 0)
@@ -572,35 +294,12 @@ InstructionCode deterOp(char* tableau)
 		temp.op = 0;
 		temp.special = 37;
 		temp.sa = 0;
-		while(k<3)
-		{
-			j=0;
-			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-			{
-				i++;
-			}
-			do
-			{
-				tab[j]=tableau[i];
-				i++;
-				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-			tab[j]='\0';
-
-			if(k==0)
-			{
+		nextLex(tab, tableau, &i);
 				temp.rd=convertirRegistre(tab);
-			}
-			else if (k==1)
-			{
+		nextLex(tab, tableau, &i);
 				temp.rs=convertirRegistre(tab);
-			}
-			else if (k==2)
-			{
+		nextLex(tab, tableau, &i);
 				temp.rt=convertirRegistre(tab);
-			}
-			k++;
-		}
 	}
 
 	else if(strcmp(tab,"ROTR") == 0)
@@ -608,35 +307,12 @@ InstructionCode deterOp(char* tableau)
 		temp.op = 0;
 		temp.special = 2;
 		temp.rs = 1;
-		while(k<3)
-		{
-			j=0;
-			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-			{
-				i++;
-			}
-			do
-			{
-				tab[j]=tableau[i];
-				i++;
-				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-			tab[j]='\0';
-
-			if(k==0)
-			{
+		nextLex(tab, tableau, &i);
 				temp.rd=convertirRegistre(tab);
-			}
-			else if (k==1)
-			{
+		nextLex(tab, tableau, &i);
 				temp.rt=convertirRegistre(tab);
-			}
-			else if (k==2)
-			{
+			nextLex(tab, tableau, &i);
 				temp.sa=atoi(tab);
-			}
-			k++;
-		}
 	}
 
 	else if(strcmp(tab,"SLL") == 0)
@@ -644,35 +320,12 @@ InstructionCode deterOp(char* tableau)
 		temp.op = 0;
 		temp.special = 0;
 		temp.rs = 0;
-		while(k<3)
-		{
-			j=0;
-			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-			{
-				i++;
-			}
-			do
-			{
-				tab[j]=tableau[i];
-				i++;
-				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-			tab[j]='\0';
-
-			if(k==0)
-			{
+		nextLex(tab, tableau, &i);
 				temp.rd=convertirRegistre(tab);
-			}
-			else if (k==1)
-			{
+		nextLex(tab, tableau, &i);
 				temp.rt=convertirRegistre(tab);
-			}
-			else if (k==2)
-			{
+		nextLex(tab, tableau, &i);
 				temp.sa=atoi(tab);
-			}
-			k++;
-		}
 	}
 
 	else if(strcmp(tab,"SLT") == 0)
@@ -680,35 +333,12 @@ InstructionCode deterOp(char* tableau)
 		temp.op = 0;
 		temp.special = 42;
 		temp.sa = 0;
-		while(k<3)
-		{
-			j=0;
-			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-			{
-				i++;
-			}
-			do
-			{
-				tab[j]=tableau[i];
-				i++;
-				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-			tab[j]='\0';
-
-			if(k==0)
-			{
+		nextLex(tab, tableau, &i);
 				temp.rd=convertirRegistre(tab);
-			}
-			else if (k==1)
-			{
+		nextLex(tab, tableau, &i);
 				temp.rs=convertirRegistre(tab);
-			}
-			else if (k==2)
-			{
+			nextLex(tab, tableau, &i);
 				temp.rt=convertirRegistre(tab);
-			}
-			k++;
-		}
 	}
 
 	else if(strcmp(tab,"SRL") == 0)
@@ -716,35 +346,13 @@ InstructionCode deterOp(char* tableau)
 		temp.op = 0;
 		temp.special = 2;
 		temp.rs = 0;
-		while(k<3)
-		{
-			j=0;
-			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-			{
-				i++;
-			}
-			do
-			{
-				tab[j]=tableau[i];
-				i++;
-				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-			tab[j]='\0';
-
-			if(k==0)
-			{
+		nextLex(tab, tableau, &i);
 				temp.rd=convertirRegistre(tab);
-			}
-			else if (k==1)
-			{
+		nextLex(tab, tableau, &i);
 				temp.rt=convertirRegistre(tab);
-			}
-			else if (k==2)
-			{
+			nextLex(tab, tableau, &i);
 				temp.sa=atoi(tab);
-			}
-			k++;
-		}
+		nextLex(tab, tableau, &i);
 	}
 
 	else if(strcmp(tab,"SUB") == 0)
@@ -752,78 +360,23 @@ InstructionCode deterOp(char* tableau)
 		temp.op = 0;
 		temp.special = 34;
 		temp.sa = 0;
-		while(k<3)
-		{
-			j=0;
-			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-			{
-				i++;
-			}
-			do
-			{
-				tab[j]=tableau[i];
-				i++;
-				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-			tab[j]='\0';
-
-			if(k==0)
-			{
+	nextLex(tab, tableau, &i);
 				temp.rd=convertirRegistre(tab);
-			}
-			else if (k==1)
-			{
+		nextLex(tab, tableau, &i);
 				temp.rs=convertirRegistre(tab);
-			}
-			else if (k==2)
-			{
+			nextLex(tab, tableau, &i);
 				temp.rt=convertirRegistre(tab);
-			}
-			k++;
-		}
 	}
 
 	else if(strcmp(tab,"SW") == 0)
 	{
 		temp.op = 43;
-		j=0;
-		while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-		{
-			i++;
-		}
-		do
-		{
-			tab[j]=tableau[i];
-			i++;
-			j++;
-		} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-		tab[j]='\0';
+		nextLex(tab, tableau, &i);
 		temp.rt=convertirRegistre(tab);
-		
-		while(k<2)
-		{
-			j=0;
-			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',' || tableau[i] == '(' )
-			{
-				i++;
-			}
-			do
-			{
-				tab[j]=tableau[i];
-				i++;
-				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n') && tableau[i] != '(' && tableau[i] != ')' );
-			tab[j]='\0';
-			if(k==0)
-			{
+		nextLex(tab, tableau, &i);
 				temp.immediat=atoi(tab);
-			}
-			else if(k==1)
-			{
+			nextLex(tab, tableau, &i);
 				temp.rs=atoi(tab);
-			}
-			k++;
-		}
 	}
 
 
@@ -832,40 +385,17 @@ InstructionCode deterOp(char* tableau)
 		temp.op = 0;
 		temp.special = 38;
 		temp.sa = 0;
-		while(k<3)
-		{
-			j=0;
-			while(tableau[i] == ' ' || tableau[i] == '$' || tableau[i] == ',')
-			{
-				i++;
-			}
-			do
-			{
-				tab[j]=tableau[i];
-				i++;
-				j++;
-			} while((tableau[i] != ' ') && (tableau[i] != ',') && (tableau[i] != '#') && (tableau[i] != EOF) && (tableau[i] != '\n'));
-			tab[j]='\0';
-
-			if(k==0)
-			{
+		nextLex(tab, tableau, &i);
 				temp.rd=convertirRegistre(tab);
-			}
-			else if (k==1)
-			{
+		nextLex(tab, tableau, &i);
 				temp.rs=convertirRegistre(tab);
-			}
-			else if (k==2)
-			{
+			nextLex(tab, tableau, &i);
 				temp.rt=convertirRegistre(tab);
-			}
-			k++;
-		}
 	}
 
 	else
 	{
-		printf("Mauvaise instruction ! %s\n", tab);
+		fprintf(stderr,"Mauvaise instruction ! %s\n", tab);
 		exit(1);
 	}
 	return temp;

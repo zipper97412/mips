@@ -1,5 +1,5 @@
-ADDI $t0, $zero, 5
-ADDI $t1, $zero, -3
+#ADDI $t0, $zero, 5
+#ADDI $t1, $zero, -3
 ADD $t2, $t0, $t1
 SUB $t3, $t0, $t2
 MULT $t3,$t0
