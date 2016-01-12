@@ -8,8 +8,11 @@ void runInstruction(Cpu* cpu, u32 instru) {
 }
 
 void loadPgrm(RAM* ram, const char* filename) {
-	FILE* file = ouvrirFichier(filename);
-
+  int nbInstru = 0;
+	InstructionCode* code =NULL;
+	FILE* fic=ouvrirFichier(filename);
+	code = decoupe(fic, &nbInstru);
+  //----------------------pas fini---------------------
 	fermerFichier(file);
 }
 
