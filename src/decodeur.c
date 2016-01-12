@@ -24,13 +24,13 @@ void fermerFichier(FILE* fichier)
 	fclose(fichier);
 }
 
-// int isIn(char c, const char* delim, int nbelem) {
-// 	for(int i=0;i<nbelem;i++) {
-// 		if(c == delim[i])
-// 			return 1;
-// 	}
-// 	return 0;
-// }
+int isIn(char c, const char* delim, int nbelem) {
+	for(int i=0;i<nbelem;i++) {
+		if(c == delim[i])
+			return 1;
+	}
+	return 0;
+}
 /* Fonction lisant un fichier, et remplissant un tableau avec le contenu du fichier*/
 InstructionCode* decoupe(FILE* fichier, int* pgrmLen)
 {

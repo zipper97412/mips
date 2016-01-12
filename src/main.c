@@ -21,11 +21,11 @@
 
 int main()
 {
-	int i=0, nbInstruction;
+	int i=0, nbInstru = 0;
 	InstructionCode* code;
 	FILE* fic=ouvrirFichier("test.as");
-	code = decoupe(fic, &nbInstruction);
-	for(i=0;i<nbInstruction;i++)
+	code = decoupe(fic, &nbInstru);
+	for(i=0;i<nbInstru;i++)
 	{
 		printf("%#010x\n", (unsigned int)code[i].raw);
 	}
