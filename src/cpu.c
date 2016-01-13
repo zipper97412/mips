@@ -4,9 +4,10 @@
 
 
 Regs Regs_new() {
+	int i=0;
   Regs regs;
   regs.pc = 0;
-  for(int i=0;i<32;i++) {
+  for(i=0;i<32;i++) {
     regs.gpr[i]=(u32)0;
   }
   return regs;
