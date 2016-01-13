@@ -16,13 +16,18 @@ u32 RAM_read_word(RAM* self, u32 rel_addr);
 
 void RAM_display(RAM* self, u32 ram_begin);
 
+
+
 typedef struct MemMap {
   RAM* ram;
   u32 ram_begin;
   u32 ram_end;
+  RAM* prog;
+  u32 prog_begin;
+  u32 prog_end;
   //IO* io;
 } MemMap;
-MemMap MemMap_new(RAM* ram, u32 ram_begin, u32 ram_end);
+MemMap MemMap_new(RAM* ram, u32 ram_begin, u32 ram_end, RAM* prog, u32 prog_begin, u32 prog_end);
 void MemMap_write(MemMap* self, u32 addr, u8 data);
 void MemMap_write_word(MemMap* self, u32 addr, u32 data);
 

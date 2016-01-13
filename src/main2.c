@@ -6,9 +6,9 @@
 #include "runners.h"
 
 int main() {
-  u8 ramTab[1024];
+  /*u8 ramTab[1024];
   RAM ram = RAM_new(ramTab,1024);
-  MemMap memmap = MemMap_new(&ram, 42, 42+1024);
+  MemMap memmap = MemMap_new(&ram, 42, 42+1024,);
   Cpu cpu = Cpu_new(memmap);
   Cpu_display(&cpu);
   printf("memtest word:\n");
@@ -36,8 +36,9 @@ int main() {
   ins.target = 1;
   ok += (ins.raw == 0x4000001);
   printf("test ecriture champ insruction:\nun 2 doit apparaitre ici:%d\n", ok);
-
-  interactif();
+  */
+  //interactif(128);
+  nonInteractif("test.as", 2048, 1024);
 
 
 

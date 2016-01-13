@@ -54,7 +54,9 @@ InstructionCode* decoupe(FILE* fichier, int* pgrmLen)
 			printf("\"%s\"\n", tableau);
 			nbInstruction++;
 			pgrm = realloc(pgrm, nbInstruction*sizeof(InstructionCode));
-			pgrm[nbInstruction-1] = deterOp(tableau);
+			if( (pgrm[nbInstruction-1] = deterOp(tableau)).raw == 0xffffffff ) {
+				exit(0);
+			}
 
 			//printf("\"%#010x\"\n", (unsigned int)deterOp(tableau).raw);
 		}
@@ -398,11 +400,15 @@ InstructionCode deterOp(char* tableau)
 			nextLex(tab, tableau, &i);
 				temp.rt=convertirRegistre(tab);
 	}
+	else if(strcmp(tab,"HALT") == 0)
+	{
+		temp.raw = 0xffeeffee;
+	}
 
 	else
 	{
 		fprintf(stderr,"Mauvaise instruction ! %s\n", tab);
-		temp.raw = 0;
+		temp.raw = 0xffffffff;
 	}
 	return temp;
 }

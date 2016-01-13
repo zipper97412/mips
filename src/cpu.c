@@ -6,6 +6,9 @@
 Regs Regs_new() {
   Regs regs;
   regs.pc = 0;
+  for(int i=0;i<32;i++) {
+    regs.gpr[i]=(u32)0;
+  }
   return regs;
 }
 void Regs_display(Regs* self) {
