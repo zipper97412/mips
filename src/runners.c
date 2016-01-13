@@ -30,6 +30,7 @@ int loadPgrm(RAM* ram, const char* filename) {
 }
 
 void interactif(int ramsize) {
+	int ok=0;
   u8* ramTab = NULL;
   u8* progTab = NULL;
   ramTab = malloc(ramsize*sizeof(u8));
@@ -49,6 +50,11 @@ void interactif(int ramsize) {
 
   while(1) {
     Regs_display(&cpu.regs);
+    if (ok == 1)
+    {
+    	printf("code machine: %#010x\n", (unsigned int)instruction);
+    }
+    ok=0;
     //scanf("%s", buffer);
     fgets(buffer, 100, stdin);
     fflush(stdin);
@@ -61,7 +67,7 @@ void interactif(int ramsize) {
 
     }
     else {
-      printf("code machine: %#010x\n", (unsigned int)instruction);
+      ok=1;
       runInstruction(&cpu, instruction);
     }
   }
