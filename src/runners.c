@@ -26,6 +26,7 @@ int loadPgrm(RAM* ram, const char* filename) {
     RAM_write_word(ram, i*4, code[i].raw);
   }
 	fermerFichier(file);
+  //printf("%d\n", nbInstru);
   return nbInstru;
 }
 
@@ -94,7 +95,7 @@ void nonInteractif(const char* filename, int ramsize, int ramOffset, int progOff
   Cpu cpu = Cpu_new(memMap);
   printf("\n--------------------Execution----------------\n");
   Cpu_display(&cpu);
-  runProg(&cpu, 0, mode);
+  runProg(&cpu, progOffset, mode);
   Cpu_display(&cpu);
   printf("----------------fin execution----------------\n");
 

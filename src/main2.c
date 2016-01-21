@@ -38,7 +38,7 @@ int main() {
   printf("test ecriture champ insruction:\nun 2 doit apparaitre ici:%d\n", ok);
   */
   //interactif(128);
-  nonInteractif("test.as", 2048, 1024, 0, DEBUG);
+  nonInteractif("test_fic", 128, 1024, 0, DEBUG);
 
 
 
