@@ -31,6 +31,7 @@ int loadPgrm(RAM* ram, const char* filename) {
 
 void interactif(int ramsize) {
 	int ok=0;
+	int printRam = 0;
   u8* ramTab = NULL;
   u8* progTab = NULL;
   ramTab = malloc(ramsize*sizeof(u8));
@@ -44,11 +45,12 @@ void interactif(int ramsize) {
   Cpu cpu = Cpu_new(memMap);
   char buffer[100];
   u32 instruction;
-  printf("--------------------execution----------------\n");
-  printf("mode interactif, quit pour quiter mem pour afficher la memoire \n");
+  printf("\n----------------------------------------Execution------------------------------------\n\n");
+  printf("Mode interactif, exit pour quiter, ram pour afficher la memoire \n");
   Cpu_display(&cpu);
 
   while(1) {
+		printRam=0;
     Regs_display(&cpu.regs);
     if (ok == 1)
     {
@@ -58,12 +60,18 @@ void interactif(int ramsize) {
     //scanf("%s", buffer);
     fgets(buffer, 100, stdin);
     fflush(stdin);
-    if(strcmp(buffer,"quit\n")==0)
+    if(strcmp(buffer,"exit\n")==0)
       break;
     if(strcmp(buffer,"ram\n")==0)
+		{
       MemMap_display(&memMap);
-    instruction = deterOp(buffer).raw;
-    if (instruction == 0) {
+			printRam=1;
+		}
+		if(strcmp(buffer,"\n")==0)
+			printRam=1;
+		if (printRam == 0)
+		  instruction = deterOp(buffer).raw;
+    if (instruction == 0 || printRam == 1 || instruction == 0xffffffff) {
 
     }
     else {
@@ -84,7 +92,7 @@ void nonInteractif(const char* filename, int ramsize, int ramOffset) {
   int nbInstru = loadPgrm(&prog, filename);
   MemMap memMap = MemMap_new(&ram,ramOffset, ramsize, &prog, 0, nbInstru*4);
   Cpu cpu = Cpu_new(memMap);
-  printf("--------------------execution----------------\n");
+  printf("\n--------------------Execution----------------\n");
   Cpu_display(&cpu);
   runProg(&cpu, 0);
   //Cpu_display(&cpu);
