@@ -1,5 +1,7 @@
 #include "cpu.h"
 #include "type.h"
+#include <stdio.h>
+
 
 void notOp(Cpu* self, InstructionCode mc) {}
 void RtypeDispatcher(Cpu* self, InstructionCode mc) {
@@ -10,7 +12,7 @@ void ADD(Cpu* self, InstructionCode mc) {
 	self->regs.gpr[mc.rd] = (i32)(self->regs.gpr[mc.rs]) + (i32)(self->regs.gpr[mc.rt]);
 }//32
 void ADDI(Cpu* self, InstructionCode mc) {
-	self->regs.gpr[mc.rt] = (i32)(self->regs.gpr[mc.rs]) + (i32)(mc.immediat);
+	self->regs.gpr[mc.rt] = (i32)(self->regs.gpr[mc.rs]) + (i16)(mc.immediat);
 }//8 I
 void SUB(Cpu* self, InstructionCode mc) {
 	self->regs.gpr[mc.rd] = (i32)(self->regs.gpr[mc.rs]) - (i32)(self->regs.gpr[mc.rt]);
@@ -57,7 +59,7 @@ void SW(Cpu* self, InstructionCode mc) {
 }//43 I
 void LUI(Cpu* self, InstructionCode mc) {
 	self->regs.gpr[mc.rt] = 0;
-	self->regs.gpr[mc.rt] += (u32)(mc.immediat<<16);
+	self->regs.gpr[mc.rt] += (u16)(mc.immediat<<16);
 }
 void MFHI(Cpu* self, InstructionCode mc) {
 	self->regs.gpr[mc.rd] = self->regs.hi;
@@ -77,6 +79,7 @@ void BNE(Cpu* self, InstructionCode mc) {
 	}
 }//5 I
 void BGTZ(Cpu* self, InstructionCode mc) {
+	printf("%d",(unsigned int)self->regs.gpr[mc.rs]);
 	if ((i32)self->regs.gpr[mc.rs] > 0){
 		self->regs.pc += (i16)((mc.immediat)<<2);
 	}
