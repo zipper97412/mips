@@ -48,9 +48,12 @@ InstructionCode* decoupe(FILE* fichier, int* pgrmLen)
 
 		if(c==EOF) //Si nous sommes arrivés à la fin du fichier, nous sortons de cette fonction
 			job = 0;
-		else if(c=='#')//Si le dernier caractère lu est un commentaire, nous lisons l'intégralité de la ligne pour passer à la ligne suivante
+		else if(c=='#' && i==0)
 			while(fgetc(fichier)!='\n');
-		else {
+		else
+		{//Si le dernier caractère lu est un commentaire, nous lisons l'intégralité de la ligne pour passer à la ligne suivante
+			if(c=='#')
+				while(fgetc(fichier)!='\n');
 			printf("\"%s\"\n", tableau);
 			nbInstruction++;
 			pgrm = realloc(pgrm, nbInstruction*sizeof(InstructionCode));
@@ -58,9 +61,6 @@ InstructionCode* decoupe(FILE* fichier, int* pgrmLen)
 			if( (pgrm[nbInstruction-1] = deterOp(tableau)).raw == 0xffffffff ) {
 				exit(0);
 			}
-
-
-
 			//printf("\"%#010x\"\n", (unsigned int)deterOp(tableau).raw);
 		}
 
