@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "runners.h"
-#include "decodeur.c"
+#include "decodeur.h"
 #include "instru_util.h"
 void runInstruction(Cpu* cpu, u32 instru) {
   ExecContainer ec = Cpu_decode(cpu, (InstructionCode)instru);
@@ -72,7 +72,7 @@ void interactif(int ramsize) {
     }
   }
 }
-void nonInteractif(const char* filename, int ramsize, int ramOffset) {
+void nonInteractif(const char* filename, int ramsize, int ramOffset, int progOffset, int mode) {
   u8* ramTab = NULL;
   ramTab = malloc(ramsize*sizeof(u8));
   if(ramTab == NULL) {
@@ -82,20 +82,28 @@ void nonInteractif(const char* filename, int ramsize, int ramOffset) {
   RAM ram = RAM_new(ramTab, ramsize);
   RAM prog;
   int nbInstru = loadPgrm(&prog, filename);
-  MemMap memMap = MemMap_new(&ram,ramOffset, ramsize, &prog, 0, nbInstru*4);
+  MemMap memMap = MemMap_new(&ram,ramOffset, ramOffset + ramsize, &prog, progOffset, progOffset + nbInstru*4);
   Cpu cpu = Cpu_new(memMap);
   printf("--------------------execution----------------\n");
   Cpu_display(&cpu);
-  runProg(&cpu, 0);
-  //Cpu_display(&cpu);
+  runProg(&cpu, 0, mode);
+  Cpu_display(&cpu);
+  printf("----------------fin execution----------------\n");
 
 }
-void runProg(Cpu* cpu, u32 start) {
+void runProg(Cpu* cpu, u32 start, int mode) {
   u32 instruction = 0;
+  char buffer[100];
   ExecContainer ec;
   cpu->regs.pc = start;
   while(instruction != 0xffeeffee) {
     instruction = Cpu_fetch(cpu).raw;
+    if(mode == DEBUG)
+      {
+        Cpu_display(cpu);
+        printf("instruction à executer: %#010x\n",(unsigned int)instruction);
+        fgets(buffer, 100, stdin);
+      }
     ec = Cpu_decode(cpu, (InstructionCode)instruction);
     Cpu_exec(cpu, ec);
   }

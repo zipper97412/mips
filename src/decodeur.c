@@ -54,9 +54,12 @@ InstructionCode* decoupe(FILE* fichier, int* pgrmLen)
 			printf("\"%s\"\n", tableau);
 			nbInstruction++;
 			pgrm = realloc(pgrm, nbInstruction*sizeof(InstructionCode));
+
 			if( (pgrm[nbInstruction-1] = deterOp(tableau)).raw == 0xffffffff ) {
 				exit(0);
 			}
+
+
 
 			//printf("\"%#010x\"\n", (unsigned int)deterOp(tableau).raw);
 		}
@@ -97,6 +100,7 @@ void nextLex(char* outBuffer, char* inBuffer, int* index) {
 					(inBuffer[*index] != '\n') &&
 					(inBuffer[*index] != '(') &&
 					(inBuffer[*index] != ')') &&
+					(inBuffer[*index] != '\0') &&
 					(inBuffer[*index] != EOF))
 	{
 		outBuffer[j]=inBuffer[*index];
@@ -142,7 +146,6 @@ InstructionCode deterOp(char* tableau)
 		temp.rs=convertirRegistre(tab);
 		nextLex(tab, tableau, &i);
 		temp.immediat=atoi(tab);
-
 	}
 
 	else if(strcmp(tab,"AND") == 0)

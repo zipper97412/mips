@@ -5,6 +5,14 @@
 
 MemMap MemMap_new(RAM* ram, u32 ram_begin, u32 ram_end, RAM* prog, u32 prog_begin, u32 prog_end) {
 
+  if(ram_begin > ram_end || prog_begin > prog_end ||
+    ( (ram_begin < prog_begin) && (prog_begin < ram_end) ) ||
+    ( (ram_begin < prog_end) && (prog_end < ram_end) ) ) {
+      printf("erreur de mappage de mémoire\n");
+      exit(1);
+    }
+
+
   MemMap memmap = {
     ram: ram,
     ram_begin: ram_begin,
