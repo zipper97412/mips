@@ -68,22 +68,22 @@ void MHLO(Cpu* self, InstructionCode mc) {
 
 void BEQ(Cpu* self, InstructionCode mc) {
 	if (self->regs.gpr[mc.rs] == self->regs.gpr[mc.rt]){
-		self->regs.pc += (i16)(mc.immediat<<2);
+		self->regs.pc += (i16)((mc.immediat)<<2);
 	}
 }//4 I
 void BNE(Cpu* self, InstructionCode mc) {
 	if (self->regs.gpr[mc.rs] != self->regs.gpr[mc.rt]){
-		self->regs.pc += (i16)(mc.immediat<<2);
+		self->regs.pc += (i16)((mc.immediat)<<2);
 	}
 }//5 I
 void BGTZ(Cpu* self, InstructionCode mc) {
 	if ((i32)self->regs.gpr[mc.rs] > 0){
-		self->regs.pc += (i16)(mc.immediat<<2);
+		self->regs.pc += (i16)((mc.immediat)<<2);
 	}
 }//7 I
 void BLEZ(Cpu* self, InstructionCode mc) {
 	if ((i32)self->regs.gpr[mc.rs] <= 0){
-		self->regs.pc += (i16)(mc.immediat<<2);
+		self->regs.pc += (i16)((mc.immediat)<<2);
 	}
 }//6 I
 void J(Cpu* self, InstructionCode mc) {
