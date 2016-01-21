@@ -90,6 +90,7 @@ void RAM_write(RAM* self, u32 rel_addr, u8 data) {
   self->data[rel_addr] = data;
 }
 void RAM_write_word(RAM* self, u32 rel_addr, u32 data){
+
   u8* temp = self->data;
   u32Bytes tempData = (u32Bytes)data;
   temp[rel_addr] = tempData.o1;
@@ -107,7 +108,7 @@ u32 RAM_read_word(RAM* self, u32 rel_addr) {
   ret.o1 = temp[rel_addr];
   ret.o2 = temp[rel_addr+1];
   ret.o3 = temp[rel_addr+2];
-  ret.o4 = temp[rel_addr+4];
+  ret.o4 = temp[rel_addr+3];
   return ret.word;
 }
 

@@ -62,7 +62,6 @@ void Cpu_display(Cpu* self) {
 
 InstructionCode Cpu_fetch(Cpu* self) {
   u32 instru = MemMap_read_word(&self->mem, self->regs.pc);
-  self->regs.pc += 4;
   return (InstructionCode)instru;
 }
 ExecContainer Cpu_decode(Cpu* self, InstructionCode instru) {
@@ -75,4 +74,5 @@ ExecContainer Cpu_decode(Cpu* self, InstructionCode instru) {
 
 void Cpu_exec(Cpu* self, ExecContainer container) {
   container.func(self, container.code);
+	self->regs.pc += 4;
 }

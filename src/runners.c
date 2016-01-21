@@ -93,7 +93,7 @@ void nonInteractif(const char* filename, int ramsize, int ramOffset, int progOff
   MemMap memMap = MemMap_new(&ram,ramOffset, ramOffset + ramsize, &prog, progOffset, progOffset + nbInstru*4);
   Cpu cpu = Cpu_new(memMap);
   printf("\n--------------------Execution----------------\n");
-  Cpu_display(&cpu);
+  if (mode == NO_DEBUG) Cpu_display(&cpu);
   runProg(&cpu, progOffset, mode);
   Cpu_display(&cpu);
   printf("----------------fin execution----------------\n");
@@ -104,8 +104,7 @@ void runProg(Cpu* cpu, u32 start, int mode) {
   char buffer[100];
   ExecContainer ec;
   cpu->regs.pc = start;
-  while(instruction != 0xffeeffee) {
-    instruction = Cpu_fetch(cpu).raw;
+  while((instruction = Cpu_fetch(cpu).raw) != 0xffeeffee) {
     if(mode == DEBUG)
       {
         Cpu_display(cpu);
