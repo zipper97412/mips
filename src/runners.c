@@ -20,13 +20,12 @@ int loadPgrm(RAM* ram, const char* filename) {
   }
   ram->data = ramTab;
   ram->len = nbInstru*4;
-  printf("%d\n", nbInstru);
+  printf("%d instructions\n", nbInstru);
   int i;
   for(i=0;i<nbInstru;i++) {
     RAM_write_word(ram, i*4, code[i].raw);
   }
 	fermerFichier(file);
-  //printf("%d\n", nbInstru);
   return nbInstru;
 }
 
@@ -48,7 +47,7 @@ void interactif(int ramsize) {
   u32 instruction;
   printf("\n----------------------------------------Execution------------------------------------\n\n");
   printf("Mode interactif, exit pour quiter, ram pour afficher la memoire \n");
-  Cpu_display(&cpu);
+  MemMap_display(&memMap);
 
   while(1) {
 		printRam=0;

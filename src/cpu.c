@@ -56,7 +56,7 @@ Cpu Cpu_new(MemMap mem) {
   return cpu;
 }
 void Cpu_display(Cpu* self) {
-  //Regs_display(&self->regs);
+  Regs_display(&self->regs);
   MemMap_display(&self->mem);
 }
 
