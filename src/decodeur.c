@@ -410,7 +410,7 @@ InstructionCode deterOp(char* tableau)
 
 	else
 	{
-		fprintf(stderr,"Mauvaise instruction ! %s\n", tab);
+		fprintf(stderr,"\nMauvaise instruction : %s\n", tab);
 		temp.raw = 0xffffffff;
 	}
 	return temp;

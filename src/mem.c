@@ -75,7 +75,7 @@ u32 MemMap_read_word(MemMap* self, u32 addr) {
 }
 void MemMap_display(MemMap* self) {
   RAM_display(self->ram, self->ram_begin);
-  printf("memoire de programme\n");
+  //printf("memoire de programme\n");
   RAM_display(self->prog, self->prog_begin);
 }
 
