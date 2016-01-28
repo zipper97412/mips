@@ -1,0 +1,24 @@
+#!/bin/sh
+
+echo $#
+case $# in
+  0)
+		exec ./mips.e -r 128 -o 1024
+		;;
+  1)
+		exec ./mips.e -r 128 -o 1024 -e $1
+		;;
+  2)
+		if [ $2 = "-pas" ] 
+		then
+			pas="-p";
+		else
+			pas="";
+		fi
+		exec ./mips.e -r 128 -o 1024 -e $1 $pas
+    ;;
+	*)
+		exec ./mips.e
+		;;
+esac
+
