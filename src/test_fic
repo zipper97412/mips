@@ -1,12 +1,35 @@
-ADDI $t1, $0, 1#t1=1
-ADDI $t2, $0, 2#t2=2
-ADD $t3, $t1, $t2#t3=3
-ADDI $t1, $t1,2#t1=3
-BEQ $t1, $t3, 0
-MULT $t3, $t2
-MFLO $t4#t4=6
-SUB $t1,$t4,$t1#t1=5
-SUB $t1,$t1,1
-SLL $t1, $t1, 1#t1=10
-SRL $t1, $t1, 1#t1=5
+ADDI $t2,$0,2 #t2=2
+ADDI $t1, $0, 1024#t1=1
+SW $t1, 0x00($t1) #PROBLEME SW ET LW : Ils prennent TOUJOURS le premier emplacement de la mémoire de PROGRAMME, ne vont jamais en mémoire tout court, que en mémoire programme, et ne prend que le premier emplacement.
+LW $t9, 0x60($t9)
+ADDI $t2,$0,2 #t2=2
+ADD $t3, $t1, $t2 #t3=3
+ADDI $t1,$t1,1
+BNE $t1,$t3, -2 #boucle jusqu'à t1=t3=3
+MULT $t1, $t2 #3*2
+MFLO $t4 #t4=6
+ADDI $t8,$0,1
+SUB $t4, $t4, $t8 #t4=5
+DIV $t4, $t2 #5/2
+MFLO $t5 #t5=2
+MFHI $t6 #t6=1 (reste de la div)
+SUB $t5,$t5, $t6 #t5=1
+BGTZ $t5, -2 #boucle jusqu'à t5<=0
+ADDI $t8,$0,10
+SUB $t5,$t5,$t8 #t5=-10
+ADDI $t5, $t5, 3 #t5+3
+SUB $t5,$t5, $t6 #t5-1
+BLEZ $t5, -3 #boucle jusqu'à t5>0
+ADDI $t2,0,8 #t2=8
+ADDI $t1, 0, 1 #t1=1
+SLL $t1, $t1, 1 #multiplication par 2
+BNE $t1, $t2,-2 #a la fin, t1=t2=8
+ADDI $t3,0,4 #t3=4
+SUB $t2,$t2,$t3 #t2=4
+SRL $t1,$t1,1 #DIV par 2, t1=4
+ADDI $t2,0,6 #t2=6
+OR $t4,$t1,$t2 #t4=6
+AND $t4,$t1,$t2 #t4=4
+XOR $t4,$t1,$t2 #t4=2
+#t1=4 t2=6 t3=4 t4=2 t5=2 t6=1
 HALT
