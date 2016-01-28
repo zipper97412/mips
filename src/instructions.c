@@ -55,7 +55,6 @@ void LW(Cpu* self, InstructionCode mc) {
 	self->regs.gpr[mc.rt] = MemMap_read_word(&self->mem, (i32)(self->regs.gpr[mc.rs]) + (i16)(mc.immediat));
 }//35 I
 void SW(Cpu* self, InstructionCode mc) {
-	printf("SW print arg: emplacement mem:%#010x %#010x(%#010x)",(unsigned int)((i32)(self->regs.gpr[mc.rs]) + (i16)(mc.immediat)), (unsigned int)((i32)(self->regs.gpr[mc.rs])), (unsigned int)((i16)(mc.immediat)) );
 	MemMap_write_word(&self->mem, (i32)(self->regs.gpr[mc.rs]) + (i16)(mc.immediat), self->regs.gpr[mc.rt]);
 }//43 I
 void LUI(Cpu* self, InstructionCode mc) {
@@ -80,7 +79,7 @@ void BNE(Cpu* self, InstructionCode mc) {
 	}
 }//5 I
 void BGTZ(Cpu* self, InstructionCode mc) {
-	printf("%d",(unsigned int)self->regs.gpr[mc.rs]);
+	
 	if ((i32)self->regs.gpr[mc.rs] > 0){
 		self->regs.pc += (i16)((mc.immediat)<<2);
 	}

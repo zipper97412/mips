@@ -383,10 +383,8 @@ InstructionCode deterOp(char* tableau)
 	{
 		temp.op = 43;
 		nextLex(tab, tableau, &i);
-		//printf("decodeur verif SW : rt=%#010x\n",convertirRegistre(tab));
 		temp.rt=convertirRegistre(tab);
 		nextLex(tab, tableau, &i);
-		//printf("decodeur verif SW : immediat=%#010x\n",atoi(tab));
 		temp.immediat=atoi(tab);
 		nextLex(tab, tableau, &i);
 		temp.rs=convertirRegistre(tab);

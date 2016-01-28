@@ -2,6 +2,7 @@ LDFLAGS= -g
 CFLAGS=-Wall  -g
 SRC = src
 
+emul-mips : mips
 
 mips : main.o cpu.o mem.o instructions.o runners.o decodeur.o
 	gcc $^ -o $@.e $(LDFLAGS)
