@@ -264,7 +264,7 @@ InstructionCode deterOp(char* tableau)
 		nextLex(tab, tableau, &i);
 				temp.immediat=atoi(tab);
 		nextLex(tab, tableau, &i);
-				temp.rs=atoi(tab);
+				temp.rs=convertirRegistre(tab);
 	}
 
 	else if(strcmp(tab,"MFHI") == 0)
@@ -383,11 +383,13 @@ InstructionCode deterOp(char* tableau)
 	{
 		temp.op = 43;
 		nextLex(tab, tableau, &i);
+		//printf("decodeur verif SW : rt=%#010x\n",convertirRegistre(tab));
 		temp.rt=convertirRegistre(tab);
 		nextLex(tab, tableau, &i);
-				temp.immediat=atoi(tab);
-			nextLex(tab, tableau, &i);
-				temp.rs=atoi(tab);
+		//printf("decodeur verif SW : immediat=%#010x\n",atoi(tab));
+		temp.immediat=atoi(tab);
+		nextLex(tab, tableau, &i);
+		temp.rs=convertirRegistre(tab);
 	}
 
 

@@ -29,8 +29,8 @@ int loadPgrm(RAM* ram, const char* filename) {
   return nbInstru;
 }
 
-void interactif(int ramsize) {
-	int ok=0;
+void interactif(int ramsize, int ramoffset) {
+int ok=0;
 	int printRam = 0;
   u8* ramTab = NULL;
   u8* progTab = NULL;
@@ -41,7 +41,7 @@ void interactif(int ramsize) {
   }
   RAM ram = RAM_new(ramTab, ramsize);
   RAM prog = RAM_new(progTab, 0);
-  MemMap memMap = MemMap_new(&ram, 0, ramsize, &prog, 0, 0);
+  MemMap memMap = MemMap_new(&ram, ramoffset, ramsize+ramoffset, &prog, 0, 0);
   Cpu cpu = Cpu_new(memMap);
   char buffer[100];
   u32 instruction;
@@ -57,7 +57,6 @@ void interactif(int ramsize) {
     	printf("code machine: %#010x\n", (unsigned int)instruction);
     }
     ok=0;
-    //scanf("%s", buffer);
     fgets(buffer, 100, stdin);
     fflush(stdin);
     if(strcmp(buffer,"exit\n")==0)

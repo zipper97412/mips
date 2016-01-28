@@ -74,8 +74,9 @@ u32 MemMap_read_word(MemMap* self, u32 addr) {
   }
 }
 void MemMap_display(MemMap* self) {
+	printf("Mémoire de donnée\n");
   RAM_display(self->ram, self->ram_begin);
-  //printf("memoire de programme\n");
+  printf("memoire de programme (rien si interractif)\n");
   RAM_display(self->prog, self->prog_begin);
 }
 
@@ -118,7 +119,7 @@ void RAM_display(RAM* self, u32 ram_begin) {
   if(self->len == 0) {
     return;
   }
-  printf("\nRAM(%#010x):\n",(unsigned int)ram_begin);
+  //printf("\nRAM(%#010x):\n",(unsigned int)ram_begin);
   for(i=0;i<self->len;i++) {
     if ((i%16) == 0) {
       printf("%#010x(%d):    \t[",(unsigned int)(i+ram_begin),i);

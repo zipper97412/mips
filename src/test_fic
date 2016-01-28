@@ -1,7 +1,7 @@
 ADDI $t2,$0,2 #t2=2
 ADDI $t1, $0, 1024#t1=1
-SW $t1, 0x00($t1) #PROBLEME SW ET LW : Ils prennent TOUJOURS le premier emplacement de la mémoire de PROGRAMME, ne vont jamais en mémoire tout court, que en mémoire programme, et ne prend que le premier emplacement.
-LW $t9, 0x60($t9)
+SW $t1, 0($t1) #PROBLEME SW ET LW : Ils prennent TOUJOURS le premier emplacement de la mémoire de PROGRAMME, ne vont jamais en mémoire tout court, que en mémoire programme, et ne prend que le premier emplacement.
+LW $t9, 96($t9) #nico oublie pas que l'hexa ça marche pas!!! 96 = 0x60
 ADDI $t2,$0,2 #t2=2
 ADD $t3, $t1, $t2 #t3=3
 ADDI $t1,$t1,1
