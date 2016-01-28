@@ -104,12 +104,14 @@ void runProg(Cpu* cpu, u32 start, int mode) {
   char buffer[100];
   ExecContainer ec;
   cpu->regs.pc = start;
-  while((instruction = Cpu_fetch(cpu).raw) != 0xffeeffee) {
-    if(mode == DEBUG)
-      {
+  while((instruction = (u32)(Cpu_fetch(cpu).raw)) != 0xffeeffee) {
+    if(mode == DEBUG) {
         Cpu_display(cpu);
-        printf("instruction à executer: %#010x\n",(unsigned int)instruction);
+        printf("\ninstruction à executer: %#010x\n",(unsigned int)instruction);
         fgets(buffer, 100, stdin);
+        fflush(stdin);
+        if(strcmp(buffer,"exit\n")==0)
+          break;
       }
     ec = Cpu_decode(cpu, (InstructionCode)instruction);
     Cpu_exec(cpu, ec);

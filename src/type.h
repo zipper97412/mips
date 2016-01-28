@@ -19,8 +19,8 @@ typedef union {
   struct {
   	u8 o4: 8;
   	u8 o3: 8;
-	u8 o2: 8;
-	u8 o1: 8;
+	  u8 o2: 8;
+	  u8 o1: 8;
   };
 }u32Bytes;
 
