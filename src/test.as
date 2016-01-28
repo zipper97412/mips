@@ -15,4 +15,5 @@ ROTR $t0, $t0, 2
 SRL $t1, $t1, 2
 SLL $t2, $t2, 1
 SLT $t3, $t1, $t2
+ADDI $t1, $zero, -3
 HALT
